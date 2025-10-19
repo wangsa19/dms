@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../**/*.vue";
+
+@theme {
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+    --yazaki-red: #d90000;
+}
+
+@base {
+    @keyframes blob {
+        0%,
+        100% {
+            transform: translate(0, 0) scale(1);
+        }
+
+        50% {
+            transform: translate(30px, -40px) scale(1.1);
+        }
+    }
+
+    .animate-blob {
+        animation: blob 8s infinite ease-in-out;
+    }
+}
+
+/* Style dasar untuk light & dark mode */
+body {
+    @apply bg-gray-100 text-gray-900;
+    @apply dark:bg-gray-900 dark:text-gray-100;
+}
+
+.main-header,
+.bg-white {
+    @apply dark:bg-gray-800 dark:border-gray-700;
+}
+
+.sidebar {
+    @apply dark:bg-gray-800 dark:border-gray-700;
+}
+
+.text-gray-800 {
+    @apply dark:text-gray-200;
+}
+.text-gray-700 {
+    @apply dark:text-gray-300;
+}
+.text-gray-600 {
+    @apply dark:text-gray-400;
+}
+.text-gray-500 {
+    @apply dark:text-gray-400;
+}
+
+.border-gray-200 {
+    @apply dark:border-gray-700;
+}
+.divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+    @apply dark:border-gray-700;
+}
+.bg-gray-50 {
+    @apply dark:bg-gray-700/50;
+}
+.hover\:bg-gray-100:hover {
+    @apply dark:hover:bg-gray-700;
+}
+.hover\:bg-gray-50:hover {
+    @apply dark:hover:bg-gray-700/50;
+}
+
+.sidebar-menu a.active {
+    @apply bg-[#d90000] text-white;
+}
+
+.sidebar-menu a:hover:not(.active) {
+    @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+}
