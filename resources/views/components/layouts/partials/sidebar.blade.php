@@ -3,7 +3,7 @@
              transition-all duration-300 ease-in-out 
              group-[.sidebar-collapsed]/sidebar:w-[90px] 
              max-lg:-translate-x-full 
-             group-[.sidebar-mobile-open]/sidebar:translate-x-0">
+             group-[.sidebar-mobile-open]/sidebar:translate-x-0 overflow-y-auto">
 
     {{-- Sidebar-Header --}}
     <div class="sidebar-header">
@@ -58,9 +58,9 @@
             </li>
             {{-- Documents Out Link --}}
             <li>
-                <a class="flex items-center gap-4 p-3 rounded-md font-medium text-gray-700 cursor-pointer hover:bg-gray-100
+                <a href="{{ route('document-out') }}" class="flex items-center gap-4 p-3 rounded-md font-medium text-gray-700 cursor-pointer hover:bg-gray-100
                           group-[.sidebar-collapsed]/sidebar:justify-center
-                          {{ request()->routeIs('documents.out') ? 'bg-[#d90000] text-white hover:bg-red-700' : '' }}">
+                          {{ request()->routeIs('document-out') ? 'bg-[#d90000] text-white hover:bg-red-700' : '' }}">
                     <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -73,7 +73,7 @@
             </li>
             {{-- Licenses Link --}}
             <li>
-                <a class="flex items-center gap-4 p-3 rounded-md font-medium text-gray-700 cursor-pointer hover:bg-gray-100
+                <a href="{{ route('licenses') }}" class="flex items-center gap-4 p-3 rounded-md font-medium text-gray-700 cursor-pointer hover:bg-gray-100
                             group-[.sidebar-collapsed]/sidebar:justify-center
                             {{ request()->routeIs('licenses') ? 'bg-[#d90000] text-white hover:bg-red-700' : '' }}">
                     <svg class="h-5 w-5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -111,38 +111,38 @@
                 </div>
                 {{-- Dropdown Menu --}}
                 <ul x-show="open" x-transition class="mt-1 space-y-1 pl-5 group-[.sidebar-collapsed]/sidebar:hidden">
-                    <li><a 
+                    <li><a href="{{ route('manage.user') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.user') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">User</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.role') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.role') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Role</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.permission') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.permission') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Permission</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.employee') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.employee') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Employees</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.position') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.position') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Positions</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.department') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.department') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Departments</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.category') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.category') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Categories</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.section') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.section') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Sections</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.field') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.field') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Fields</a>
                     </li>
-                    <li><a
+                    <li><a href="{{ route('manage.document-type') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.document-type') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Document
                             Types</a>
                     </li>
-                    <li><a 
+                    <li><a href="{{ route('manage.action-frequency-unit') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.action-frequency-unit') ? 'text-[#d90000] font-semibold' : 'text-gray-600 hover:text-gray-900' }}">Action
                             Frequency Units</a>
                     </li>
