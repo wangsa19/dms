@@ -129,6 +129,9 @@
                     <label class="text-sm font-medium text-gray-700">Email</label>
                     <input wire:model="email" type="email" placeholder="Enter email address"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
+                    @error('email')
+                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Password --}}
@@ -137,6 +140,9 @@
                     <input wire:model="password" type="password"
                         placeholder="{{ $userId ? 'Leave blank to keep current password' : 'Enter new password' }}"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
+                    @error('password')
+                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Employee --}}
@@ -149,6 +155,9 @@
                         <option value="{{ $emp->id }}">{{ $emp->name }}</option>
                         @endforeach
                     </select>
+                    @error('employee_id')
+                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Role --}}
@@ -161,6 +170,9 @@
                         <option value="{{ $role->id }}">{{ $role->name }}</option>
                         @endforeach
                     </select>
+                    @error('role_id')
+                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
             </div>

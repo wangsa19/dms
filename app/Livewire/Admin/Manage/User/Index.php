@@ -26,7 +26,7 @@ class Index extends Component
         'email' => 'required|email',
         'role_id' => 'nullable|exists:roles,id',
         'employee_id' => 'nullable|exists:employees,id',
-        'password' => 'nullable|min:6',
+        'password' => 'required|min:6',
     ];
 
     public function render()
@@ -77,6 +77,16 @@ class Index extends Component
     public function save()
     {
         $data = $this->validate();
+
+        $employeeId = $this->employee_id === "" ? null : $this->employee_id;
+        $roleId = $this->role_id === "" ? null : $this->role_id;
+
+        $data = [
+            'name' => $this->name,
+            'email' => $this->email,
+            'employee_id' => $employeeId, // Gunakan variabel yang sudah dikonversi
+            'role_id' => $roleId,         // Gunakan variabel yang sudah dikonversi
+        ];
 
         if ($this->password) {
             $data['password'] = bcrypt($this->password);
