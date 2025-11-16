@@ -18,9 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->timestamps();
 
-            // Tambahan dari schema DMS:
             $table->foreignId('employee_id')->nullable()->constrained('employees')->nullOnDelete();
-            $table->foreignId('role_id')->nullable()->constrained('roles')->nullOnDelete();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

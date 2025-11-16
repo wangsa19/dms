@@ -23,11 +23,6 @@ class UserSeeder extends Seeder
         $section = Section::first();
         $position = Position::first();
 
-        $role = Role::firstOrCreate([
-            'name' => 'Super Admin',
-            'guard_name' => 'web'
-        ]);
-
         $employee = Employee::firstOrCreate(
             ['nik' => 'EMP001'],
             [
@@ -46,7 +41,6 @@ class UserSeeder extends Seeder
                 'name' => 'Super Admin',
                 'password' => Hash::make('password'),
                 'employee_id' => $employee->id,
-                'role_id' => $role->id,
             ]
         );
     }
