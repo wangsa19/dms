@@ -86,8 +86,12 @@ class Index extends Component
 
         User::updateOrCreate(['id' => $this->userId], $data);
 
+        $message = $this->userId ? 'User updated successfully.' : 'User created successfully.';
+
+        $this->dispatch('show-toast', message: $message, type: 'success');
+
         $this->closeModal();
-        session()->flash('message', 'User saved successfully!');
+        // session()->flash('message', 'User saved successfully!');
     }
 
     public $showDeleteModal = false;
@@ -104,6 +108,7 @@ class Index extends Component
         User::find($this->userIdToDelete)->delete();
         $this->showDeleteModal = false;
         $this->userIdToDelete = null;
-        session()->flash('message', 'User deleted successfully.');
+        $this->dispatch('show-toast', message: 'User deleted successfully.', type: 'success');
+        // session()->flash('message', 'User deleted successfully.');
     }
 }

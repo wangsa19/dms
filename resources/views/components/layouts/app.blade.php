@@ -110,6 +110,7 @@
         </footer>
     </main>
 
+    <livewire:components.toast />
     @livewireScripts
 </body>
 

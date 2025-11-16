@@ -81,3 +81,16 @@ body {
 .sidebar-menu a:hover:not(.active) {
     @apply hover:bg-gray-200 dark:hover:bg-gray-700;
 }
+
+.animate-progress-toast {
+    animation: progress-toast 4s linear forwards;
+}
+
+@keyframes progress-toast {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
