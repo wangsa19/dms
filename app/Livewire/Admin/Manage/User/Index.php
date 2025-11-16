@@ -7,6 +7,8 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use App\Models\Employee;
 use Livewire\WithPagination;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 class Index extends Component
 {
@@ -18,8 +20,11 @@ class Index extends Component
     public $email;
     public $password;
     public $employee_id;
-    public $selectedRoles = []; 
-    public $isOpen = false; 
+
+    // --- PERUBAHAN 1: Diubah ke singular untuk 'satu user satu role' ---
+    public $selectedRole = null;
+
+    public $isOpen = false;
 
     // Properti untuk tabel
     public $search = '';
@@ -35,7 +40,7 @@ class Index extends Component
 
     public function mount()
     {
-        $this->allRoles = Role::all();
+        $this->allRoles = Role::where('guard_name', 'web')->get();
         $this->allEmployees = Employee::all();
     }
 
@@ -47,23 +52,32 @@ class Index extends Component
         }
 
         return [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $this->userId,
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($this->userId),
+            ],
             'employee_id' => 'nullable|exists:employees,id',
             'password' => $passwordRules,
-            'selectedRoles' => 'required|array|min:1',
-            'selectedRoles.*' => 'exists:roles,id',
+
+            // --- PERUBAHAN 2: Validasi diubah ke singular ---
+            'selectedRole' => 'required|exists:roles,id',
         ];
     }
 
     public function render()
     {
+        $users = User::with(['employee', 'roles'])
+            ->where(function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('email', 'like', '%' . $this->search . '%');
+            })
+            ->latest()
+            ->paginate($this->perPage);
+
         return view('livewire.admin.manage.user.index', [
-            'users' => User::with(['employee', 'roles']) 
-                ->where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('email', 'like', '%' . $this->search . '%')
-                ->latest()
-                ->paginate($this->perPage),
+            'users' => $users,
         ]);
     }
 
@@ -83,7 +97,8 @@ class Index extends Component
 
     public function resetForm()
     {
-        $this->reset(['userId', 'name', 'email', 'password', 'employee_id', 'selectedRoles']);
+        // --- PERUBAHAN 3: 'selectedRoles' diubah ke 'selectedRole' ---
+        $this->reset(['userId', 'name', 'email', 'password', 'employee_id', 'selectedRole']);
     }
 
     // --- Logika CRUD ---
@@ -95,13 +110,16 @@ class Index extends Component
 
     public function edit($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('roles')->findOrFail($id);
         $this->userId = $id;
         $this->name = $user->name;
         $this->email = $user->email;
         $this->employee_id = $user->employee_id;
+        $this->password = null;
 
-        $this->selectedRoles = $user->roles->pluck('id')->toArray();
+        // --- PERUBAHAN 4: Ambil 1 role saja ---
+        // Dapatkan ID dari role pertama yang dimiliki user, atau null jika tidak ada
+        $this->selectedRole = $user->roles->first()?->id;
 
         $this->resetErrorBag();
         $this->isOpen = true;
@@ -120,14 +138,20 @@ class Index extends Component
         ];
 
         if (!empty($data['password'])) {
-            $userData['password'] = bcrypt($data['password']);
+            $userData['password'] = Hash::make($data['password']);
         }
 
         $user = User::updateOrCreate(['id' => $this->userId], $userData);
 
-        $roles = Role::whereIn('id', $this->selectedRoles)->get();
+        // --- PERUBAHAN 5 (SOLUSI ERROR): ---
+        // 1. Temukan role berdasarkan ID yang dipilih dari $this->selectedRole
+        $role = Role::findById($this->selectedRole);
 
-        $user->syncRoles($roles); 
+        // 2. Gunakan syncRoles dengan NAMA role. Ini akan memperbaiki error.
+        //    syncRoles() akan otomatis menghapus role lama dan menambah role baru.
+        if ($role) {
+            $user->syncRoles($role->name);
+        }
 
         $message = $this->userId ? 'User updated successfully.' : 'User created successfully.';
         $this->dispatch('show-toast', message: $message, type: 'success');
@@ -143,8 +167,11 @@ class Index extends Component
     public function delete()
     {
         if ($this->userIdToDelete) {
-            User::find($this->userIdToDelete)->delete();
-            $this->dispatch('show-toast', message: 'User deleted successfully.', type: 'success');
+            $user = User::find($this->userIdToDelete);
+            if ($user) {
+                $user->delete();
+                $this->dispatch('show-toast', message: 'User deleted successfully.', type: 'success');
+            }
         }
         $this->showDeleteModal = false;
         $this->userIdToDelete = null;
