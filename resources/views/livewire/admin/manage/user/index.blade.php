@@ -162,15 +162,19 @@
 
                 {{-- Role --}}
                 <div>
-                    <label class="text-sm font-medium text-gray-700">Role</label>
-                    <select wire:model="role_id"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm bg-white focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select role...</option>
-                        @foreach($roles as $role)
-                        <option value="{{ $role->id }}">{{ $role->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('role_id')
+                    <label class="text-sm font-medium text-gray-700">Roles</label>
+                    <div class="border border-gray-200 rounded-lg p-3 mt-1 max-h-40 overflow-y-auto">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            @foreach($allRoles as $role)
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" wire:model="selectedRoles" value="{{ $role->id }}"
+                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span classs="text-sm text-gray-600">{{ $role->name }}</span>
+                            </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    @error('selectedRoles')
                     <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>

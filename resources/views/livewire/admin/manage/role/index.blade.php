@@ -1,18 +1,19 @@
 <div>
     {{-- Breadcrumbs --}}
-    <div class="text-sm text-gray-500 mb-4">Manage > Role</div>
+    <div class-="text-sm text-gray-500 mb-4">Manage > Role</div>
 
     {{-- Main Title --}}
     <h1 class="text-3xl font-bold text-gray-800 mb-6">ROLE</h1>
 
     {{-- Main Content Card --}}
-    <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
         {{-- Card Header --}}
         <div class="px-5 py-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-y-4">
             <h5 class="font-semibold text-lg text-gray-800">Manage Role</h5>
-            <a href="#"
-                class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md text-sm hover:bg-blue-700 transition-colors">Create
-                New</a>
+            <button wire:click="openModal"
+                class="cursor-pointer bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm hover:bg-blue-700 transition">
+                + Create New
+            </button>
         </div>
 
         {{-- Card Body --}}
@@ -21,8 +22,8 @@
             <div class="flex justify-between items-center mb-4 flex-wrap gap-y-4">
                 <div>
                     <label class="text-sm text-gray-700">Show
-                        <select
-                            class="border border-gray-200 rounded-md shadow-sm text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500">
+                        <select wire:model.live="perPage"
+                            class="border border-gray-300 rounded-md text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500">
                             <option>10</option>
                             <option>25</option>
                             <option>50</option>
@@ -32,8 +33,8 @@
                 </div>
                 <div>
                     <label class="text-sm text-gray-700">Search:
-                        <input type="search"
-                            class="border border-gray-300 rounded-md shadow-sm text-sm p-1.5 ml-2 focus:border-blue-500 focus:ring-blue-500">
+                        <input wire:model.live.debounce.300ms="search" type="search"
+                            class="border border-gray-300 rounded-md text-sm p-1.5 ml-2 focus:border-blue-500 focus:ring-blue-500">
                     </label>
                 </div>
             </div>
@@ -44,73 +45,137 @@
                     <thead class="bg-gray-50 text-gray-600">
                         <tr>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">No</th>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">Guard Name</th>
+                            <th class="p-3 text-left font-semibold whitespace-nowrap">Role Name</th>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Permissions</th>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 text-gray-700">
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-3 align-middle whitespace-nowrap">1</td>
-                            <td class="p-3 align-middle whitespace-nowrap">super_admin</td>
-                            <td class="p-3 align-middle whitespace-nowrap">
+                        @forelse ($roles as $index => $role)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="p-3">{{ $roles->firstItem() + $index }}</td>
+                            <td class="p-3 font-medium">{{ $role->name }}</td>
+                            <td class="p-3">
                                 <div class="flex flex-wrap gap-1">
+                                    @forelse ($role->permissions->take(10) as $permission)
                                     <span
-                                        class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">user-create</span>
+                                        class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        {{ $permission->name }}
+                                    </span>
+                                    @empty
+                                    <span class="text-gray-400 text-xs">- No permissions -</span>
+                                    @endforelse
+                                    @if($role->permissions->count() > 10)
                                     <span
-                                        class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">user-edit</span>
-                                    <span
-                                        class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">user-delete</span>
-                                    <span
-                                        class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">role-create</span>
-                                    <span
-                                        class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">role-edit</span>
-                                    <span
-                                        class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">role-delete</span>
-                                    <span
-                                        class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">permission-create</span>
-                                    <span
-                                        class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">permission-edit</span>
-                                    <span
-                                        class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">permission-delete</span>
-                                    <span
-                                        class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">department-create</span>
-                                    <span
-                                        class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">department-edit</span>
-                                    <span
-                                        class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">department-delete</span>
+                                        class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        +{{ $role->permissions->count() - 10 }} more
+                                    </span>
+                                    @endif
                                 </div>
                             </td>
-                            <td class="p-3 align-middle whitespace-nowrap">
-                                <button class="text-gray-500 hover:text-gray-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="w-5 h-5">
-                                        <circle cx="12" cy="12" r="1"></circle>
-                                        <circle cx="19" cy="12" r="1"></circle>
-                                        <circle cx="5" cy="12" r="1"></circle>
-                                    </svg>
+                            <td class="p-3 flex gap-3">
+                                <button wire:click="edit({{ $role->id }})"
+                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium transition cursor-pointer hover:underline">
+                                    Edit
                                 </button>
+                                @if ($role->name != 'super_admin')
+                                <button wire:click="confirmDelete({{ $role->id }})"
+                                    class="text-red-600 hover:text-red-800 text-sm font-medium transition cursor-pointer hover:underline">
+                                    Delete
+                                </button>
+                                @endif
                             </td>
                         </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="text-center p-4 text-gray-500">No roles found.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
             {{-- Table Pagination --}}
-            <div class="flex justify-between items-center mt-4 text-sm">
-                <div class="text-gray-600">
-                    Showing 1 to 1 of 1 entries
-                </div>
-                <div class="inline-flex rounded-md shadow-sm" role="group">
-                    <a href="#"
-                        class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 text-sm font-medium">Previous</a>
-                    <a href="#"
-                        class="px-4 py-2 border-t border-b border-gray-300 bg-blue-600 text-white z-10 text-sm font-bold">1</a>
-                    <a href="#"
-                        class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 text-sm font-medium">Next</a>
-                </div>
+            <div class="mt-4">
+                {{ $roles->links() }}
             </div>
         </div>
     </div>
+
+    {{-- MODAL CREATE / EDIT ROLE --}}
+    @if($isOpen)
+    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 animate-fadeIn">
+        <div class="bg-white w-full max-w-lg rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">
+                {{ $roleId ? 'Edit Role' : 'Create Role' }}
+            </h3>
+
+            <div class="space-y-4">
+                {{-- Name --}}
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Role Name</label>
+                    <input wire:model="name" placeholder="Enter role name"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500"
+                        type="text">
+                    @error('name')
+                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Permissions --}}
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Permissions</label>
+                    <div class="border border-gray-200 rounded-lg p-3 mt-1 max-h-60 overflow-y-auto">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            @foreach($allPermissions as $permission)
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" wire:model="selectedPermissions" value="{{ $permission->id }}"
+                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="text-sm text-gray-600">{{ $permission->name }}</span>
+                            </label>
+                            @endforeach
+                        </div>
+                    </div>
+                    @error('selectedPermissions')
+                    <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            {{-- Modal Buttons --}}
+            <div class="flex justify-end gap-3 mt-8">
+                <button wire:click="closeModal"
+                    class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition cursor-pointer">
+                    Cancel
+                </button>
+                <button wire:click="save"
+                    class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition cursor-pointer shadow">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- DELETE CONFIRMATION MODAL --}}
+    @if($showDeleteModal)
+    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 animate-fadeIn">
+        <div class="bg-white max-w-sm w-full p-6 rounded-xl shadow-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Delete Confirmation</h3>
+            <p class="text-sm text-gray-600 mb-6">
+                Are you sure you want to delete this role?
+            </p>
+            <div class="flex justify-end gap-3">
+                <button wire:click="$set('showDeleteModal', false)"
+                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm cursor-pointer">
+                    Cancel
+                </button>
+                <button wire:click="delete"
+                    class="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg text-sm cursor-pointer shadow">
+                    Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
