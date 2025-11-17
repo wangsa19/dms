@@ -5,29 +5,29 @@ document.addEventListener("DOMContentLoaded", function () {
         document.documentElement.classList.add("dark");
     }
     // --- Logika untuk Sidebar (akan aktif di semua halaman) ---
-    const menuIcon = document.querySelector(".main-header .menu-icon");
-    const sidebarOverlay = document.querySelector(".sidebar-overlay");
-    const body = document.body;
+    // const menuIcon = document.querySelector(".main-header .menu-icon");
+    // const sidebarOverlay = document.querySelector(".sidebar-overlay");
+    // const body = document.body;
 
-    if (menuIcon) {
-        menuIcon.addEventListener("click", () => {
-            // Cek lebar layar saat ikon diklik
-            if (window.innerWidth <= 1024) {
-                // Logika untuk mobile: buka/tutup dengan overlay
-                body.classList.toggle("sidebar-mobile-open");
-            } else {
-                // Logika untuk desktop: ciutkan/lebarkan
-                body.classList.toggle("sidebar-collapsed");
-            }
-        });
-    }
+    // if (menuIcon) {
+    //     menuIcon.addEventListener("click", () => {
+    //         // Cek lebar layar saat ikon diklik
+    //         if (window.innerWidth <= 1024) {
+    //             // Logika untuk mobile: buka/tutup dengan overlay
+    //             body.classList.toggle("sidebar-mobile-open");
+    //         } else {
+    //             // Logika untuk desktop: ciutkan/lebarkan
+    //             body.classList.toggle("sidebar-collapsed");
+    //         }
+    //     });
+    // }
 
-    if (sidebarOverlay) {
-        // Tutup sidebar jika overlay diklik
-        sidebarOverlay.addEventListener("click", () => {
-            body.classList.remove("sidebar-mobile-open");
-        });
-    }
+    // if (sidebarOverlay) {
+    //     // Tutup sidebar jika overlay diklik
+    //     sidebarOverlay.addEventListener("click", () => {
+    //         body.classList.remove("sidebar-mobile-open");
+    //     });
+    // }
 
     // --- Logika untuk Chart (hanya akan berjalan di halaman dashboard) ---
     // Cek jika elemen chart ada sebelum merendernya
