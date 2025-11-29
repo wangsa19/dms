@@ -100,7 +100,6 @@
     <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 ">
         <div class="bg-white w-full max-w-lg rounded-xl p-6 shadow-lg">
             <h3 class="text-xl font-bold text-gray-800 mb-6">
-                {{ $positionId ? 'Edit Position' : 'Create Position' }}
             </h3>
 
             <form wire:submit.prevent="save">
@@ -132,7 +131,7 @@
                 {{-- Modal Buttons --}}
                 <div class="flex justify-end gap-3 mt-8">
                     <button type="button" wire:click="closeModal"
-                        class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition cursor-pointer">
+                        class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition cursor-pointer dark:text-gray-700">
                         Cancel
                     </button>
                     <button type="submit"
@@ -155,7 +154,7 @@
             </p>
             <div class="flex justify-end gap-3">
                 <button wire:click="$set('showDeleteModal', false)"
-                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm cursor-pointer">
+                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm cursor-pointer dark:text-gray-700">
                     Cancel
                 </button>
                 <button wire:click="delete"

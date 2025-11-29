@@ -58,7 +58,7 @@
                             <td class="p-3 font-medium">{{ $permission->name }}</td>
                             <td class="p-3">
                                 {{-- Tampilkan guard name sebagai badge --}}
-                                <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                <span class="bg-gray-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                                     {{ $permission->guard_name }}
                                 </span>
                             </td>
