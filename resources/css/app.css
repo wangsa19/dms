@@ -107,3 +107,48 @@ body {
 .animate-fadeIn {
     animation: fadeIn 0.5s ease-out !important;
 } */
+
+
+/* ... kode css anda sebelumnya ... */
+
+/* Custom Utility untuk Scrollbar Slim */
+@utility scrollbar-slim {
+    /* Untuk Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-300) transparent;
+
+    /* Untuk Chrome, Edge, Safari */
+    &::-webkit-scrollbar {
+        width: 6px;  /* Lebar scrollbar vertikal */
+        height: 6px; /* Tinggi scrollbar horizontal */
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--color-gray-300);
+        border-radius: 9999px; /* Rounded full */
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background-color: var(--color-gray-400);
+    }
+}
+
+/* Dukungan Dark Mode untuk Scrollbar */
+/* Mengubah warna thumb saat class 'dark' aktif di html/body */
+@variant dark {
+    & .scrollbar-slim {
+        scrollbar-color: var(--color-gray-600) transparent;
+
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--color-gray-600);
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: var(--color-gray-500);
+        }
+    }
+}

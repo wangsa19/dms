@@ -26,8 +26,8 @@ class UserSeeder extends Seeder
         $employee = Employee::firstOrCreate(
             ['nik' => 'EMP001'],
             [
-                'name' => 'System Administrator',
-                'gender' => 'L',
+                'name' => 'Employee 1',
+                'gender' => 'Laki-laki',
                 'phone' => '08123456789',
                 'position_id' => $position->id,
                 'section_id' => $section->id,
@@ -38,7 +38,7 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name' => 'Super Admin',
+                'name' => 'Admin',
                 'password' => Hash::make('password'),
                 'employee_id' => $employee->id,
             ]

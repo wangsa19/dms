@@ -1,6 +1,6 @@
 {{-- Sidebar Hauptcontainer --}}
 <aside
-    class="sidebar fixed top-0 left-0 h-screen w-[260px] bg-white border-r border-gray-200 z-50 transition-transform duration-300 ease-in-out overflow-y-auto -translate-x-full group-[.sidebar-mobile-open]/sidebar:translate-x-0 lg:translate-x-0 group-[.sidebar-collapsed]/sidebar:lg:-translate-x-full">
+    class="sidebar fixed top-0 left-0 h-screen w-[260px] bg-white border-r border-gray-200 z-50 transition-transform duration-300 ease-in-out overflow-y-auto -translate-x-full group-[.sidebar-mobile-open]/sidebar:translate-x-0 lg:translate-x-0 group-[.sidebar-collapsed]/sidebar:lg:-translate-x-full scrollbar-slim">
     {{-- Sidebar-Header --}}
     <div class="sidebar-header relative flex items-center justify-center h-[64px] border-b border-gray-100"> {{--
         Opsional: tambah tinggi & border --}}

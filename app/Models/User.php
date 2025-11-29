@@ -23,7 +23,6 @@ class User extends Authenticatable
         'email',
         'password',
         'employee_id',
-        'role_id',
     ];
 
     /**
@@ -51,11 +50,5 @@ class User extends Authenticatable
     public function employee()
     {
         return $this->belongsTo(Employee::class);
-    }
-
-    // Relasi ke Role
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
     }
 }
