@@ -6,13 +6,15 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-6">CATEGORY</h1>
 
     {{-- Main Content Card --}}
-    <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
         {{-- Card Header --}}
         <div class="px-5 py-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-y-4">
             <h5 class="font-semibold text-lg text-gray-800">Manage Category</h5>
-            <a href="#"
-                class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md text-sm hover:bg-blue-700 transition-colors">Create
-                New</a>
+            {{-- Tombol Create --}}
+            <button wire:click="create"
+                class="cursor-pointer bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm hover:bg-blue-700 transition">
+                + Create New
+            </button>
         </div>
 
         {{-- Card Body --}}
@@ -20,9 +22,10 @@
             {{-- Table Controls --}}
             <div class="flex justify-between items-center mb-4 flex-wrap gap-y-4">
                 <div>
+                    {{-- Kontrol Show Entries --}}
                     <label class="text-sm text-gray-700">Show
-                        <select
-                            class="border border-gray-200 rounded-md shadow-sm text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500">
+                        <select wire:model.live="perPage"
+                            class="border border-gray-300 rounded-md text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500">
                             <option>10</option>
                             <option>25</option>
                             <option>50</option>
@@ -30,10 +33,12 @@
                         entries
                     </label>
                 </div>
+
                 <div>
+                    {{-- Kontrol Search --}}
                     <label class="text-sm text-gray-700">Search:
-                        <input type="search"
-                            class="border border-gray-300 rounded-md shadow-sm text-sm p-1.5 ml-2 focus:border-blue-500 focus:ring-blue-500">
+                        <input wire:model.live.debounce.300ms="search" type="search"
+                            class="border border-gray-300 rounded-md text-sm p-1.5 ml-2 focus:border-blue-500 focus:ring-blue-500">
                     </label>
                 </div>
             </div>
@@ -44,59 +49,120 @@
                     <thead class="bg-gray-50 text-gray-600">
                         <tr>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">No</th>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">Category ID</th>
+                            {{-- <th class="p-3 text-left font-semibold whitespace-nowrap">Category ID</th> --}}
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Name</th>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Code</th>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Action</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-gray-200 text-gray-700">
-                        @php
-                        $categories = [
-                        ['id' => 1, 'name' => 'Company/Operation certification', 'code' => null],
-                        ['id' => 2, 'name' => 'Plant Operation', 'code' => null],
-                        ['id' => 3, 'name' => 'Management of building', 'code' => null],
-                        ['id' => 4, 'name' => 'Employment', 'code' => null],
-                        ['id' => 5, 'name' => 'Generator', 'code' => null],
-                        ];
-                        @endphp
-                        @foreach ($categories as $index => $category)
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-3 align-middle whitespace-nowrap">{{ $index + 1 }}</td>
-                            <td class="p-3 align-middle whitespace-nowrap">{{ $category['id'] }}</td>
-                            <td class="p-3 align-middle whitespace-nowrap">{{ $category['name'] }}</td>
-                            <td class="p-3 align-middle whitespace-nowrap">{{ $category['code'] }}</td>
-                            <td class="p-3 align-middle whitespace-nowrap">
-                                <button class="text-gray-500 hover:text-gray-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="w-5 h-5">
-                                        <circle cx="12" cy="12" r="1"></circle>
-                                        <circle cx="19" cy="12" r="1"></circle>
-                                        <circle cx="5" cy="12" r="1"></circle>
-                                    </svg>
+                        {{-- Loop data dari komponen --}}
+                        @forelse ($categories as $index => $category)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="p-3 align-middle whitespace-nowrap">{{ $categories->firstItem() + $index }}</td>
+                            {{-- <td class="p-3 align-middle whitespace-nowrap">{{ $category->id }}</td> --}}
+                            <td class="p-3 align-middle whitespace-nowrap font-medium">{{ $category->name }}</td>
+                            <td class="p-3 align-middle whitespace-nowrap">{{ $category->code ?? '-' }}</td>
+                            <td class="p-3 align-middle whitespace-nowrap flex gap-3">
+                                {{-- Tombol Edit --}}
+                                <button wire:click="edit({{ $category->id }})"
+                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium transition cursor-pointer hover:underline">
+                                    Edit
+                                </button>
+                                {{-- Tombol Delete --}}
+                                <button wire:click="confirmDelete({{ $category->id }})"
+                                    class="text-red-600 hover:text-red-800 text-sm font-medium transition cursor-pointer hover:underline">
+                                    Delete
                                 </button>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        {{-- Tampilan jika data kosong --}}
+                        <tr>
+                            <td colspan="5" class="text-center p-4 text-gray-500">No categories found.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
-            {{-- Table Pagination --}}
-            <div class="flex justify-between items-center mt-4 text-sm">
-                <div class="text-gray-600">
-                    Showing 1 to 5 of 5 entries
-                </div>
-                <div class="inline-flex rounded-md shadow-sm" role="group">
-                    <a href="#"
-                        class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 text-sm font-medium">Previous</a>
-                    <a href="#"
-                        class="px-4 py-2 border-t border-b border-gray-300 bg-blue-600 text-white z-10 text-sm font-bold">1</a>
-                    <a href="#"
-                        class="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 text-sm font-medium">Next</a>
-                </div>
+            {{-- Pagination Links --}}
+            <div class="mt-4">
+                {{ $categories->links() }}
             </div>
         </div>
     </div>
+
+    {{-- MODAL CREATE / EDIT CATEGORY --}}
+    @if($isOpen)
+    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 ">
+        <div class="bg-white w-full max-w-lg rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">
+                {{ $categoryId ? 'Edit Category' : 'Create New Category' }}
+            </h3>
+
+            <form wire:submit.prevent="save">
+                <div class="space-y-4">
+
+                    {{-- Name --}}
+                    <div>
+                        <label for="name" class="text-sm font-medium text-gray-700">Name</label>
+                        <input id="name" wire:model="name" placeholder="Enter category name"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500"
+                            type="text">
+                        @error('name')
+                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Code --}}
+                    <div>
+                        <label for="code" class="text-sm font-medium text-gray-700">Code</label>
+                        <input id="code" wire:model="code" type="text" placeholder="Enter category code (Optional)"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
+                        @error('code')
+                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                </div>
+
+                {{-- Modal Buttons --}}
+                <div class="flex justify-end gap-3 mt-8">
+                    <button type="button" wire:click="closeModal"
+                        class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition cursor-pointer dark:text-gray-700">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition cursor-pointer shadow">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+
+    {{-- DELETE CONFIRMATION MODAL --}}
+    @if($showDeleteModal)
+    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 ">
+        <div class="bg-white max-w-sm w-full p-6 rounded-xl shadow-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Delete Confirmation</h3>
+            <p class="text-sm text-gray-600 mb-6">
+                Are you sure you want to delete this category? This action cannot be undone.
+            </p>
+            <div class="flex justify-end gap-3">
+                <button wire:click="$set('showDeleteModal', false)"
+                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm cursor-pointer dark:text-gray-700">
+                    Cancel
+                </button>
+                <button wire:click="delete"
+                    class="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg text-sm cursor-pointer shadow">
+                    Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
