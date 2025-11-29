@@ -10,7 +10,7 @@
         {{-- Card Header --}}
         <div class="px-5 py-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-y-4">
             <h5 class="font-semibold text-lg text-gray-800">Manage Position</h5>
-            {{-- Tombol Create Baru --}}
+            {{-- Tombol Create --}}
             <button wire:click="create"
                 class="cursor-pointer bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm hover:bg-blue-700 transition">
                 + Create New
@@ -49,7 +49,7 @@
                     <thead class="bg-gray-50 text-gray-600">
                         <tr>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">No</th>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">Position ID</th>
+                            {{-- <th class="p-3 text-left font-semibold whitespace-nowrap">Position ID</th> --}}
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Name</th>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Code</th>
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Action</th>
@@ -60,9 +60,8 @@
                         {{-- Loop data dari komponen --}}
                         @forelse ($positions as $index => $position)
                         <tr class="hover:bg-gray-50 transition">
-                            {{-- Gunakan firstItem() untuk nomor urut yang benar dengan paginasi --}}
                             <td class="p-3 align-middle whitespace-nowrap">{{ $positions->firstItem() + $index }}</td>
-                            <td class="p-3 align-middle whitespace-nowrap">{{ $position->id }}</td>
+                            {{-- <td class="p-3 align-middle whitespace-nowrap">{{ $position->id }}</td> --}}
                             <td class="p-3 align-middle whitespace-nowrap font-medium">{{ $position->name }}</td>
                             <td class="p-3 align-middle whitespace-nowrap">{{ $position->code ?? '-' }}</td>
                             <td class="p-3 align-middle whitespace-nowrap flex gap-3">
