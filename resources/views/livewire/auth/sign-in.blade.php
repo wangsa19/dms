@@ -67,17 +67,32 @@
                     </div>
 
                     {{-- Password --}}
-                    <div>
+                    <div x-data="{ showPassword: false }">
                         <label for="password"
                             class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password</label>
                         <div class="relative group">
+                            {{-- Icon Gembok (Kiri) --}}
                             <span
                                 class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-red-600 transition-colors">
                                 <x-heroicon-s-lock-closed class="w-6 h-6" />
                             </span>
-                            <input wire:model.defer="password" id="password" type="password" required
-                                class="block w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-sm placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:text-white transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-600"
+
+                            {{-- Input Password --}}
+                            <input wire:model.defer="password" id="password" :type="showPassword ? 'text' : 'password'"
+                                required
+                                class="block w-full pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-900/50 border-2 border-gray-200 dark:border-gray-700 rounded-xl shadow-sm placeholder-gray-400 focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:text-white transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-600"
                                 placeholder="••••••••">
+
+                            {{-- Tombol Show/Hide (Kanan) --}}
+                            <button type="button" @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-red-600 cursor-pointer focus:outline-none transition-colors">
+
+                                {{-- Icon Mata Terbuka (Show) --}}
+                                <x-heroicon-s-eye x-show="!showPassword" class="w-5 h-5" />
+
+                                {{-- Icon Mata Tertutup (Hide) --}}
+                                <x-heroicon-s-eye-slash x-show="showPassword" style="display: none;" class="w-5 h-5" />
+                            </button>
                         </div>
                         @error('password') <p class="text-sm text-red-600 mt-2 flex items-center"><i
                                 class="fas fa-exclamation-circle mr-1"></i>{{ $message }}</p> @enderror
@@ -106,17 +121,6 @@
                         </span>
                     </button>
                 </form>
-
-                {{-- Divider --}}
-                <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-                        Don't have an account?
-                        <a href="#"
-                            class="font-semibold text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 transition">
-                            Contact Administrator
-                        </a>
-                    </p>
-                </div>
             </div>
 
             {{-- Footer --}}
