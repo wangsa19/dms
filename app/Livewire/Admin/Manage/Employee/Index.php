@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Admin\Manage\Employee;
 
+use App\Exports\EmployeeExport;
+use App\Imports\EmployeeImport;
 use Livewire\Component;
 use App\Models\Employee;
 use App\Models\Department;
@@ -9,10 +11,13 @@ use App\Models\Section;
 use App\Models\Position;
 use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
+use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Index extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     // Form fields
     public $employeeId;
@@ -40,6 +45,10 @@ class Index extends Component
     public $showDeleteModal = false;
     public $employeeIdToDelete = null;
     public $employeeNameToDelete = '';
+
+    // Property baru buat file import
+    public $fileImport;
+    public $isImportModalOpen = false;
 
     /**
      * Mount: Load initial data for dropdowns (Departments & Positions)
@@ -223,5 +232,41 @@ class Index extends Component
     public function updatedPerPage()
     {
         $this->resetPage();
+    }
+
+    // --- Logic Import ---
+
+    public function openImportModal()
+    {
+        $this->resetErrorBag();
+        $this->fileImport = null;
+        $this->isImportModalOpen = true;
+    }
+
+    public function closeImportModal()
+    {
+        $this->isImportModalOpen = false;
+        $this->fileImport = null;
+    }
+
+    public function importExcel()
+    {
+        $this->validate([
+            'fileImport' => 'required|mimes:xlsx,xls,csv|max:10240',
+        ]);
+
+        try {
+            Excel::import(new EmployeeImport, $this->fileImport);
+
+            $this->dispatch('show-toast', message: 'Data imported successfully!', type: 'success');
+            $this->closeImportModal();
+        } catch (\Exception $e) {
+            $this->dispatch('show-toast', message: 'Error importing: ' . $e->getMessage(), type: 'error');
+        }
+    }
+
+    public function export()
+    {
+        return Excel::download(new EmployeeExport, 'employee.xlsx');
     }
 }
