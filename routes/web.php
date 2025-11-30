@@ -1,14 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/sign-in', App\Livewire\Auth\SignIn::class)->name('sign-in');
+Route::get('/sign-in', App\Livewire\Auth\SignIn::class)->name('login');
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware('is.login')->group(function () {
     Route::get('/dashboard', App\Livewire\Admin\Dashboard::class)->name('dashboard');
     Route::get('/documents', App\Livewire\Admin\Documents::class)->name('documents');
     Route::get('/document-out', App\Livewire\Admin\DocumentOut\Index::class)->name('document-out');

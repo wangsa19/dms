@@ -118,10 +118,65 @@
                         justify-center font-bold">3</div>
                 </div>
                 {{-- User Info --}}
-                <div class="flex items-center gap-2">
-                    <div class="user-avatar w-9 h-9 bg-gray-300 rounded-full flex items-center
-                        justify-center font-bold">SA</div>
-                    <div class="user-name font-semibold max-sm:hidden">Super Admin</div>
+                {{-- User Info & Dropdown --}}
+                <div class="relative" x-data="{ userDropdownOpen: false }">
+                    <button @click="userDropdownOpen = !userDropdownOpen" @click.outside="userDropdownOpen = false"
+                        class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200">
+
+                        {{-- Avatar --}}
+                        <div
+                            class="user-avatar w-9 h-9 bg-gray-300 rounded-full flex items-center justify-center font-bold text-gray-700">
+                            {{ substr(auth()->user()->name, 0, 2) }}
+                        </div>
+
+                        {{-- Name --}}
+                        <div class="hidden md:block text-left">
+                            <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 leading-tight">
+                                {{ auth()->user()->name }}
+                            </div>
+                            <div class="text-[10px] text-gray-500 font-medium">
+                                {{-- Optional: Show role or email --}}
+                                {{ auth()->user()->email }}
+                            </div>
+                        </div>
+
+                        {{-- Chevron Icon --}}
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 text-gray-400 transition-transform duration-200"
+                            :class="userDropdownOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    {{-- Dropdown Menu --}}
+                    <div x-show="userDropdownOpen" x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="transform opacity-0 scale-95"
+                        x-transition:enter-end="transform opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-75"
+                        x-transition:leave-start="transform opacity-100 scale-100"
+                        x-transition:leave-end="transform opacity-0 scale-95"
+                        class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-300 py-1 z-50 origin-top-right"
+                        style="display: none;">
+
+                        {{-- Profile Link (Optional) --}}
+                        {{-- <a href="#"
+                            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Profile
+                        </a> --}}
+
+                        {{-- Divider --}}
+                        {{-- <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div> --}}
+
+                        {{-- Logout Button --}}
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 transition-colors">
+                                Log Out
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </header>

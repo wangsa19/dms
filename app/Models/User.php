@@ -51,4 +51,20 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Employee::class);
     }
+
+    /**
+     * Menentukan route dashboard berdasarkan role user.
+     */
+    public function getRedirectRoute()
+    {
+        if ($this->hasRole(['Admin'])) {
+            return 'dashboard';
+        }
+
+        if ($this->hasRole('employee')) {
+            return 'welcome';
+        }
+
+        return 'welcome';
+    }
 }
