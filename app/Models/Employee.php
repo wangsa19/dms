@@ -6,15 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    protected $fillable = [
-        'nik',
-        'name',
-        'gender',
-        'phone',
-        'position_id',
-        'section_id',
-        'department_id'
-    ];
+    protected $guarded = ['id'];
 
     public function position()
     {
@@ -39,5 +31,10 @@ class Employee extends Model
     public function licenses()
     {
         return $this->hasMany(License::class, 'owner_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'employee_id');
     }
 }

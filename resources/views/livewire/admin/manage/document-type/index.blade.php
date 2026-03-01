@@ -56,7 +56,7 @@
                         </tr>
                     </thead>
 
-                    <tbody class="divide-y divide-gray-200 text-gray-700">
+                    <tbody class="divide-y divide-gray-700 text-gray-700">
                         {{-- Loop data dari komponen --}}
                         @forelse ($documentTypes as $index => $type)
                         <tr class="hover:bg-gray-50 transition">

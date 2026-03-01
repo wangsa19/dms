@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActionFrequencyUnit extends Model
 {
-    protected $fillable = ['name', 'code'];
+    protected $guarded = ['id'];
 
     public function licenses()
     {

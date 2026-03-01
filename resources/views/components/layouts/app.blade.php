@@ -54,7 +54,7 @@
     }" x-init="init()" :class="{ 
         'sidebar-mobile-open': isMobileOpen, 
         'sidebar-collapsed': isDesktopCollapsed 
-    }" class="bg-gray-100 font-sans text-gray-900 flex flex-col md:flex-row min-h-screen group/sidebar">
+    }" class="bg-gray-200 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-200 flex flex-col md:flex-row min-h-screen group/sidebar">
 
     <div id="breakpoint-check" class="hidden lg:block w-0 h-0 absolute -z-50"></div>
 
@@ -74,10 +74,10 @@
 
         {{-- Header --}}
         <header
-            class="main-header bg-white rounded-lg p-3 shadow-sm flex items-center justify-between mb-6 border border-gray-200">
+            class="main-header bg-white dark:bg-gray-900 rounded-lg p-3 shadow-sm flex items-center justify-between mb-6 border border-gray-200 dark:border-gray-700">
             <div class="flex items-center gap-5">
                 {{-- Menu Icon Trigger --}}
-                <div @click="toggleSidebar()" class="menu-icon cursor-pointer">
+                <div @click="toggleSidebar()" class="menu-icon cursor-pointer text-gray-700 dark:text-gray-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="12" x2="21" y2="12" />
@@ -93,16 +93,15 @@
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
-                    <input type="text" placeholder="Search..." class="border border-gray-200 rounded-md py-1.5 pl-8 pr-4 w-64 
+                    <input type="text" placeholder="Search..." class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md py-1.5 pl-8 pr-4 w-64 
                         focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
             </div>
 
             <div class="flex items-center gap-5">
                 {{-- Dark Mode Toggle --}}
-                <button id="theme-toggle" type="button" class="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 
-            focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 
-            rounded-lg text-sm p-2.5 transition">
+                <button id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle color theme"
+                    class="inline-flex items-center justify-center h-10 w-10 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition">
                     <x-heroicon-o-moon id="theme-toggle-dark-icon" class="hidden w-5 h-5" />
                     <x-heroicon-o-sun id="theme-toggle-light-icon" class="hidden w-5 h-5" />
                 </button>
@@ -121,11 +120,11 @@
                 {{-- User Info & Dropdown --}}
                 <div class="relative" x-data="{ userDropdownOpen: false }">
                     <button @click="userDropdownOpen = !userDropdownOpen" @click.outside="userDropdownOpen = false"
-                        class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200">
+                        class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-1.5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700">
 
                         {{-- Avatar --}}
                         <div
-                            class="user-avatar w-9 h-9 bg-gray-300 rounded-full flex items-center justify-center font-bold text-gray-700">
+                            class="user-avatar w-9 h-9 bg-gray-300 dark:bg-gray-700 rounded-full flex items-center justify-center font-bold text-gray-700 dark:text-gray-100">
                             {{ substr(auth()->user()->name, 0, 2) }}
                         </div>
 
@@ -142,7 +141,7 @@
 
                         {{-- Chevron Icon --}}
                         <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 text-gray-400 transition-transform duration-200"
+                            class="h-4 w-4 text-gray-400 dark:text-gray-300 transition-transform duration-200"
                             :class="userDropdownOpen ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -183,7 +182,7 @@
 
         {{ $slot }}
 
-        <footer class="mt-auto pt-6 border-t border-gray-200 flex justify-between text-sm text-gray-500 
+        <footer class="mt-auto pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-between text-sm text-gray-500 dark:text-gray-400 
             max-md:flex-col max-md:text-center max-md:gap-2">
             <p>2025 © Jatim Autocomp Indonesia.</p>
             <p>Develop by Politeknik Elektronika Negeri Surabaya</p>

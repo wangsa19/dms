@@ -51,7 +51,7 @@
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 text-gray-700">
+                    <tbody class="divide-y divide-gray-700 text-gray-700">
                         @forelse ($permissions as $index => $permission)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="p-3">{{ $permissions->firstItem() + $index }}</td>

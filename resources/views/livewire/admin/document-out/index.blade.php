@@ -54,7 +54,7 @@
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 text-gray-700">
+                    <tbody class="divide-y divide-gray-700 text-gray-700">
                         <tr class="hover:bg-gray-50">
                             <td class="p-3 align-middle whitespace-nowrap">1</td>
                             <td class="p-3 align-middle whitespace-nowrap">Akta No.5 Tentang Pendirian Perseroan</td>

@@ -19,7 +19,12 @@ class DatabaseSeeder extends Seeder
             DepartmentSeeder::class,
             SectionSeeder::class,
             PositionSeeder::class,
+            RoleSeeder::class,
             UserSeeder::class,
+            FieldSeeder::class,
+            CategorySeeder::class,
+            DocumentTypeSeeder::class,
+            ActionFrequencyUnitSeeder::class,
         ]);
     }
 }

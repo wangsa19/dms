@@ -6,13 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
 {
-    protected $fillable = [
-        'document_id',
-        'license_id',
-        'user_id',
-        'message',
-        'status'
-    ];
+    protected $guarded = ['id'];
 
     public function document()
     {

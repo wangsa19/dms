@@ -17,7 +17,11 @@ return new class extends Migration
             $table->integer('version_number');
             $table->string('file_name');
             $table->string('file_path');
+            $table->string('file_type')->nullable(); 
+            $table->bigInteger('file_size')->nullable(); 
+            $table->text('revision_notes')->nullable(); 
             $table->foreignId('uploader_id')->constrained('users');
+            $table->index(['document_id', 'version_number']);
             $table->timestamps();
         });
     }

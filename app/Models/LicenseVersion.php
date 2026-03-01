@@ -6,13 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LicenseVersion extends Model
 {
-    protected $fillable = [
-        'license_id',
-        'version_number',
-        'file_name',
-        'file_path',
-        'uploader_id'
-    ];
+    protected $guarded = ['id'];
 
     public function license()
     {

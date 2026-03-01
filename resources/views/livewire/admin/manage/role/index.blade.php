@@ -50,7 +50,7 @@
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 text-gray-700">
+                    <tbody class="divide-y divide-gray-700 text-gray-700">
                         @forelse ($roles as $index => $role)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="p-3">{{ $roles->firstItem() + $index }}</td>

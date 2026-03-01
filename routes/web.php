@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Livewire\Admin\Documents\Show as DocumentDetail;
+use App\Livewire\Admin\Licenses\Show as LicenseDetail;
 
 
 Route::get('/', function () {
@@ -19,9 +21,12 @@ Route::post('/logout', function (Request $request) {
 
 Route::prefix('admin')->middleware('is.login')->group(function () {
     Route::get('/dashboard', App\Livewire\Admin\Dashboard::class)->name('dashboard');
-    Route::get('/documents', App\Livewire\Admin\Documents::class)->name('documents');
+    Route::get('/documents', App\Livewire\Admin\Documents\Index::class)->name('documents');
+    Route::get('/documents/{id}', DocumentDetail::class)->name('documents.show');
     Route::get('/document-out', App\Livewire\Admin\DocumentOut\Index::class)->name('document-out');
     Route::get('/licenses', App\Livewire\Admin\Licenses\Index::class)->name('licenses');
+    Route::get('/licenses/{id}', LicenseDetail::class)->name('licenses.show');
+
 
     Route::prefix('manage')->name('manage.')->group(function () {
         Route::get('/user', App\Livewire\Admin\Manage\User\Index::class)->name('user');

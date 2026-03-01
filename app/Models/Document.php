@@ -6,20 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
-    protected $fillable = [
-        'name',
-        'document_type_id',
-        'category_id',
-        'field_id',
-        'department_id',
-        'section_id',
-        'owner_id',
-        'location',
-        'call_number',
-        'status'
-    ];
+    protected $guarded = ['id'];
 
-    public function type()
+    public function documentType()
     {
         return $this->belongsTo(DocumentType::class, 'document_type_id');
     }

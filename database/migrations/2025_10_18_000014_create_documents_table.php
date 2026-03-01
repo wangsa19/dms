@@ -13,16 +13,19 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name_id');
+            $table->string('name_jp');
             $table->foreignId('document_type_id')->constrained('document_types');
             $table->foreignId('category_id')->constrained('categories');
             $table->foreignId('field_id')->constrained('fields');
             $table->foreignId('department_id')->constrained('departments');
             $table->foreignId('section_id')->constrained('sections');
             $table->foreignId('owner_id')->constrained('employees');
-            $table->string('location');
-            $table->string('call_number')->nullable();
             $table->string('status');
+            $table->integer('current_version')->default(1);
+            $table->index('document_type_id');
+            $table->index('category_id');
+            $table->index('department_id');
             $table->timestamps();
         });
     }

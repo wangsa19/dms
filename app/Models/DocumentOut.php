@@ -6,14 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DocumentOut extends Model
 {
-    protected $fillable = [
-        'document_id',
-        'borrower_id',
-        'checkout_time',
-        'return_time',
-        'status'
-    ];
-
+    protected $guarded = ['id'];
+    
     public function document()
     {
         return $this->belongsTo(Document::class);

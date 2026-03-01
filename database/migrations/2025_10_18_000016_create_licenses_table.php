@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('licenses', function (Blueprint $table) {
             $table->id();
-            $table->string('name_en');
             $table->string('name_id');
             $table->string('name_jp');
             $table->foreignId('document_type_id')->constrained('document_types');
@@ -29,6 +28,7 @@ return new class extends Migration
             $table->string('government_issuer')->nullable();
             $table->integer('action_frequency_value')->nullable();
             $table->foreignId('action_frequency_unit_id')->nullable()->constrained('action_frequency_units');
+            $table->integer('current_version')->default(1);
             $table->timestamps();
         });
     }

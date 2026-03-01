@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Section extends Model
 {
-    protected $fillable = ['name', 'code', 'department_id'];
+    protected $guarded = ['id'];
 
     public function department()
     {
@@ -21,5 +21,10 @@ class Section extends Model
     public function documents()
     {
         return $this->hasMany(Document::class);
+    }
+
+    public function licenses()
+    {
+        return $this->hasMany(License::class);
     }
 }

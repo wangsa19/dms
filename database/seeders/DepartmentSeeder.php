@@ -13,14 +13,8 @@ class DepartmentSeeder extends Seeder
      */
     public function run(): void
     {
-        Department::firstOrCreate([
-            'name' => 'Information Technology',
-            'code' => 'IT'
-        ]);
-
-        Department::firstOrCreate([
-            'name' => 'Human Resource',
-            'code' => 'HR'
-        ]);
+        Department::firstOrCreate(['name' => 'Information Technology', 'code' => 'IT']);
+        Department::firstOrCreate(['name' => 'Human Resource', 'code' => 'HR']);
+        Department::firstOrCreate(['name' => 'Finance', 'code' => 'FIN']);
     }
 }

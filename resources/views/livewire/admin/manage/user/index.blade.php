@@ -55,7 +55,7 @@
                         </tr>
                     </thead>
 
-                    <tbody class="divide-y divide-gray-200 text-gray-700">
+                    <tbody class="divide-y divide-gray-700 text-gray-700">
                         @forelse ($users as $index => $user)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="p-3">{{ $users->firstItem() + $index }}</td>

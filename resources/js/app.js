@@ -1,9 +1,65 @@
 import "./bootstrap";
 
-document.addEventListener("DOMContentLoaded", function () {
-    if (localStorage.getItem("color-theme") === "dark") {
-        document.documentElement.classList.add("dark");
+const applySavedTheme = () => {
+    const storedTheme = localStorage.getItem("color-theme");
+    const shouldUseDark =
+        storedTheme === "dark" ||
+        (!storedTheme &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+    document.documentElement.classList.toggle("dark", shouldUseDark);
+};
+
+const initThemeToggle = () => {
+    applySavedTheme();
+
+    const themeToggleBtn = document.getElementById("theme-toggle");
+    const themeToggleDarkIcon = document.getElementById(
+        "theme-toggle-dark-icon"
+    );
+    const themeToggleLightIcon = document.getElementById(
+        "theme-toggle-light-icon"
+    );
+
+    const syncThemeToggleUI = () => {
+        const isDark = document.documentElement.classList.contains("dark");
+
+        if (themeToggleDarkIcon) {
+            themeToggleDarkIcon.classList.toggle("hidden", isDark);
+        }
+        if (themeToggleLightIcon) {
+            themeToggleLightIcon.classList.toggle("hidden", !isDark);
+        }
+
+        if (themeToggleBtn) {
+            const nextModeLabel = isDark
+                ? "Switch to light mode"
+                : "Switch to dark mode";
+            themeToggleBtn.setAttribute("aria-label", nextModeLabel);
+            themeToggleBtn.setAttribute("title", nextModeLabel);
+        }
+    };
+
+    syncThemeToggleUI();
+
+    if (themeToggleBtn && !themeToggleBtn.dataset.themeBound) {
+        themeToggleBtn.dataset.themeBound = "true";
+
+        themeToggleBtn.addEventListener("click", function () {
+            const isDark = document.documentElement.classList.contains("dark");
+            const nextIsDark = !isDark;
+
+            document.documentElement.classList.toggle("dark", nextIsDark);
+            localStorage.setItem("color-theme", nextIsDark ? "dark" : "light");
+
+            syncThemeToggleUI();
+        });
     }
+};
+
+const initAppEnhancements = () => {
+    initThemeToggle();
+
     // --- Logika untuk Sidebar (akan aktif di semua halaman) ---
     // const menuIcon = document.querySelector(".main-header .menu-icon");
     // const sidebarOverlay = document.querySelector(".sidebar-overlay");
@@ -125,51 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // --- Logika untuk Dark Mode Toggle ---
-    const themeToggleBtn = document.getElementById("theme-toggle");
-    const themeToggleDarkIcon = document.getElementById(
-        "theme-toggle-dark-icon"
-    );
-    const themeToggleLightIcon = document.getElementById(
-        "theme-toggle-light-icon"
-    );
+};
 
-    // Tampilkan ikon yang benar saat halaman dimuat (berdasarkan kelas 'dark' di <html>)
-    if (document.documentElement.classList.contains("dark")) {
-        if (themeToggleLightIcon)
-            themeToggleLightIcon.classList.remove("hidden");
-        if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add("hidden");
-    } else {
-        if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove("hidden");
-        if (themeToggleLightIcon) themeToggleLightIcon.classList.add("hidden");
-    }
-
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener("click", function () {
-            // Toggle ikon
-            themeToggleDarkIcon.classList.toggle("hidden");
-            themeToggleLightIcon.classList.toggle("hidden");
-
-            // Toggle tema
-            if (localStorage.getItem("color-theme")) {
-                // Jika tema sudah ada di local storage
-                if (localStorage.getItem("color-theme") === "light") {
-                    document.documentElement.classList.add("dark");
-                    localStorage.setItem("color-theme", "dark");
-                } else {
-                    document.documentElement.classList.remove("dark");
-                    localStorage.setItem("color-theme", "light");
-                }
-            } else {
-                // Jika tema belum ada di local storage
-                if (document.documentElement.classList.contains("dark")) {
-                    document.documentElement.classList.remove("dark");
-                    localStorage.setItem("color-theme", "light");
-                } else {
-                    document.documentElement.classList.add("dark");
-                    localStorage.setItem("color-theme", "dark");
-                }
-            }
-        });
-    }
-});
+document.addEventListener("DOMContentLoaded", initAppEnhancements);
+document.addEventListener("livewire:navigated", initAppEnhancements);

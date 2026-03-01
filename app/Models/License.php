@@ -6,24 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class License extends Model
 {
-    protected $fillable = [
-        'name_en',
-        'name_id',
-        'name_jp',
-        'document_type_id',
-        'occurrence_type',
-        'category_id',
-        'field_id',
-        'department_id',
-        'owner_id',
-        'status',
-        'start_date',
-        'end_date',
-        'reminder_date',
-        'government_issuer',
-        'action_frequency_value',
-        'action_frequency_unit_id'
-    ];
+    protected $guarded = ['id'];
 
     public function versions()
     {
@@ -40,7 +23,12 @@ class License extends Model
         return $this->belongsTo(Employee::class, 'owner_id');
     }
 
-    public function type()
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
+
+    public function documentType()
     {
         return $this->belongsTo(DocumentType::class, 'document_type_id');
     }
@@ -55,7 +43,7 @@ class License extends Model
         return $this->belongsTo(Field::class);
     }
 
-    public function unit()
+    public function actionFrequencyUnit()
     {
         return $this->belongsTo(ActionFrequencyUnit::class, 'action_frequency_unit_id');
     }
