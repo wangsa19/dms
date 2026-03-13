@@ -42,3 +42,16 @@ Route::prefix('admin')->middleware('is.login')->group(function () {
         Route::get('/action-frequency-unit', App\Livewire\Admin\Manage\ActionFrequencyUnit\Index::class)->name('action-frequency-unit');
     });
 });
+
+Route::group(['middleware' => ['auth']], function () {
+    // Route yang bisa diakses kalau punya permission view
+    Route::group(['middleware' => ['permission:view documents']], function () {
+        Route::get('/documents', App\Livewire\Admin\Documents\Index::class)->name('documents.index');
+        Route::get('/documents/{document}', App\Livewire\Admin\Documents\Show::class)->name('documents.show');
+    });
+
+    Route::group(['middleware' => ['permission:view licenses']], function () {
+        Route::get('/licenses', App\Livewire\Admin\Licenses\Index::class)->name('licenses.index');
+        Route::get('/licenses/{license}', App\Livewire\Admin\Licenses\Show::class)->name('licenses.show');
+    });
+});

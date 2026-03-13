@@ -21,7 +21,7 @@ class Show extends Component
             'section',
             'owner.user', // <--- UBAH DI SINI (tambahkan .user)
             'versions' => function ($query) {
-                $query->orderBy('version_number', 'desc');
+                $query->with('uploader')->orderBy('version_number', 'desc');
             }
         ])->findOrFail($id);
     }   

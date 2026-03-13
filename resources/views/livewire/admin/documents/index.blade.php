@@ -9,10 +9,13 @@
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
         <div class="px-5 py-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-y-4">
             <h5 class="font-semibold text-lg text-gray-800">Manage Documents</h5>
+            @can('create documents')
+
             <button wire:click="create"
                 class="cursor-pointer bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition">
                 + Create New
             </button>
+            @endcan
         </div>
 
         <div class="p-5">

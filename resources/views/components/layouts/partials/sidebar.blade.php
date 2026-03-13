@@ -4,8 +4,7 @@
     {{-- Sidebar-Header --}}
     <div
         class="sidebar-header relative flex items-center justify-center h-[64px] border-b border-gray-100 dark:border-gray-700">
-        {{--
-        Opsional: tambah tinggi & border --}}
+        {{-- Opsional: tambah tinggi & border --}}
         <a class="flex items-center justify-center">
             {{-- Logo --}}
             <h2 class="text-[#d90000] text-center font-bold text-2xl">
@@ -46,7 +45,9 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+
             {{-- Documents Link --}}
+            @can('view documents')
             <li>
                 <a wire:navigate href="{{ route('documents') }}"
                     class="flex items-center gap-4 p-3 rounded-md font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800
@@ -60,7 +61,10 @@
                     <span>Documents</span>
                 </a>
             </li>
+            @endcan
+
             {{-- Documents Out Link --}}
+            @can('view document outs')
             <li>
                 <a wire:navigate href="{{ route('document-out') }}"
                     class="flex items-center gap-4 p-3 rounded-md font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800
@@ -75,7 +79,10 @@
                     <span>Documents Out</span>
                 </a>
             </li>
+            @endcan
+
             {{-- Licenses Link --}}
+            @can('view licenses')
             <li>
                 <a wire:navigate href="{{ route('licenses') }}"
                     class="flex items-center gap-4 p-3 rounded-md font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800
@@ -90,8 +97,10 @@
                     <span>Licenses</span>
                 </a>
             </li>
+            @endcan
 
-            {{-- Manage Dropdown --}}
+            {{-- Manage Dropdown: Ditampilkan jika punya minimal 1 akses master data --}}
+            @canany(['view users', 'view roles', 'view permissions', 'view employees', 'view positions', 'view departments', 'view categories', 'view sections', 'view fields', 'view document types', 'view action frequency units'])
             <li x-data="{ open: {{ request()->routeIs('manage.*') ? 'true' : 'false' }} }">
                 <div @click="open = !open"
                     class="flex items-center justify-between gap-4 p-3 rounded-md font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer
@@ -112,45 +121,78 @@
                         <path d="m9 18 6-6-6-6" />
                     </svg>
                 </div>
-                {{-- Dropdown Menu --}}
+                
+                {{-- Dropdown Menu Items --}}
                 <ul x-show="open" x-transition class="mt-1 space-y-1 pl-5">
+                    
+                    @can('view users')
                     <li><a wire:navigate href="{{ route('manage.user') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.user') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">User</a>
                     </li>
+                    @endcan
+
+                    @can('view roles')
                     <li><a wire:navigate href="{{ route('manage.role') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.role') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Role</a>
                     </li>
+                    @endcan
+
+                    @can('view permissions')
                     <li><a wire:navigate href="{{ route('manage.permission') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.permission') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Permission</a>
                     </li>
+                    @endcan
+
+                    @can('view employees')
                     <li><a wire:navigate href="{{ route('manage.employee') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.employee') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Employees</a>
                     </li>
+                    @endcan
+
+                    @can('view positions')
                     <li><a wire:navigate href="{{ route('manage.position') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.position') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Positions</a>
                     </li>
+                    @endcan
+
+                    @can('view departments')
                     <li><a wire:navigate href="{{ route('manage.department') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.department') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Departments</a>
                     </li>
+                    @endcan
+
+                    @can('view categories')
                     <li><a wire:navigate href="{{ route('manage.category') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.category') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Categories</a>
                     </li>
+                    @endcan
+
+                    @can('view sections')
                     <li><a wire:navigate href="{{ route('manage.section') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.section') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Sections</a>
                     </li>
+                    @endcan
+
+                    @can('view fields')
                     <li><a wire:navigate href="{{ route('manage.field') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.field') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Fields</a>
                     </li>
+                    @endcan
+
+                    @can('view document types')
                     <li><a wire:navigate href="{{ route('manage.document-type') }}"
-                            class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.document-type') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Document
-                            Types</a>
+                            class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.document-type') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Document Types</a>
                     </li>
+                    @endcan
+
+                    @can('view action frequency units')
                     <li><a wire:navigate href="{{ route('manage.action-frequency-unit') }}"
-                            class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.action-frequency-unit') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Action
-                            Frequency Units</a>
+                            class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.action-frequency-unit') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Action Frequency Units</a>
                     </li>
+                    @endcan
                 </ul>
             </li>
+            @endcanany
         </ul>
     </nav>
 </aside>

@@ -52,12 +52,8 @@ class User extends Authenticatable
      */
     public function getRedirectRoute()
     {
-        if ($this->hasRole(['Admin'])) {
+        if ($this->can('access dashboard')) {
             return 'dashboard';
-        }
-
-        if ($this->hasRole('employee')) {
-            return 'welcome';
         }
 
         return 'welcome';

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             SectionSeeder::class,
             PositionSeeder::class,
             RoleSeeder::class,
+            PermissionSeeder::class,
             UserSeeder::class,
             FieldSeeder::class,
             CategorySeeder::class,

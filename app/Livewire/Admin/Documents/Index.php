@@ -156,6 +156,8 @@ class Index extends Component
 
     public function save()
     {
+        // Authorization check
+        abort_if(!auth()->user()->can('create documents'), 403, 'Anda tidak memiliki akses untuk menambah dokumen.');
         $data = $this->validate();
 
         // Pisahkan data file dari data dokumen utama

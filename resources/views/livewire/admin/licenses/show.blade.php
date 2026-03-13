@@ -107,6 +107,7 @@
                             <tr>
                                 <th class="p-3 text-left font-semibold">Ver</th>
                                 <th class="p-3 text-left font-semibold">File Name</th>
+                                <th class="p-3 text-left font-semibold">Uploader</th>
                                 <th class="p-3 text-left font-semibold">Notes</th>
                                 <th class="p-3 text-left font-semibold">Upload Date</th>
                                 <th class="p-3 text-left font-semibold">Action</th>
@@ -122,6 +123,11 @@
                                     {{ $version->file_name }}
                                     <div class="text-xs text-gray-400 uppercase">{{ $version->file_type }} • {{
                                         number_format($version->file_size / 1024, 2) }} KB</div>
+                                </td>
+                                <td class="p-3 align-middle">
+                                    <span class="font-medium text-gray-800">
+                                        {{ $version->uploader->name ?? 'System/Unknown' }}
+                                    </span>
                                 </td>
                                 <td class="p-3 align-middle text-gray-600">{{ $version->revision_notes ?? '-' }}</td>
                                 <td class="p-3 align-middle text-gray-600">{{ $version->created_at->format('d M Y, H:i')
