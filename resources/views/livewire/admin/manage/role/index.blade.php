@@ -67,7 +67,7 @@
                                     @endforelse
                                     @if($role->permissions->count() > 10)
                                     <span
-                                        class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        class="bg-gray-100 text-gray-800 dark:bg-gray-700 text-xs font-medium px-2.5 py-0.5 rounded-full">
                                         +{{ $role->permissions->count() - 10 }} more
                                     </span>
                                     @endif
@@ -145,7 +145,7 @@
             {{-- Modal Buttons --}}
             <div class="flex justify-end gap-3 mt-8">
                 <button wire:click="closeModal"
-                    class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition cursor-pointer">
+                    class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition">
                     Cancel
                 </button>
                 <button wire:click="save"

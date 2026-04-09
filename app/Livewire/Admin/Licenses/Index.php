@@ -150,11 +150,19 @@ class Index extends Component
 
     public function create()
     {
+        abort_if(!auth()->user()->can('create licenses'), 403, 'Anda tidak memiliki akses untuk menambah lisensi.');
+
         $this->openModal();
     }
 
     public function edit($id)
     {
+        if ($this->licenseId) {
+            abort_if(!auth()->user()->can('edit licenses'), 403, 'Anda tidak memiliki akses untuk mengedit.');
+        } else {
+            abort_if(!auth()->user()->can('create licenses'), 403, 'Anda tidak memiliki akses untuk menambah data.');
+        }
+
         try {
             $license = License::findOrFail($id);
 
@@ -231,12 +239,16 @@ class Index extends Component
 
     public function confirmDelete($id)
     {
+        abort_if(!auth()->user()->can('delete licenses'), 403, 'Anda tidak memiliki akses untuk menghapus lisensi.');
+
         $this->licenseIdToDelete = $id;
         $this->showDeleteModal = true;
     }
 
     public function delete()
     {
+        abort_if(!auth()->user()->can('delete licenses'), 403, 'Anda tidak memiliki akses untuk menghapus lisensi.');
+        
         if ($this->licenseIdToDelete) {
             try {
                 $license = License::with('versions')->find($this->licenseIdToDelete);

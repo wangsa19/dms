@@ -9,10 +9,12 @@
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
         <div class="px-5 py-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-y-4">
             <h5 class="font-semibold text-lg text-gray-800">Manage Corporate Licenses</h5>
+            @can('create licenses')
             <button wire:click="create"
                 class="cursor-pointer bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition">
                 + Create New
             </button>
+            @endcan
         </div>
 
         <div class="p-5">
@@ -74,10 +76,16 @@
                             <td class="p-3 align-middle whitespace-nowrap flex gap-3">
                                 <a href="{{ route('licenses.show', $lic->id) }}"
                                     class="text-emerald-600 hover:text-emerald-800 text-sm font-medium transition hover:underline">View</a>
+                                    
+                                @can('edit licenses')
                                 <button wire:click="edit({{ $lic->id }})"
                                     class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium transition hover:underline">Edit</button>
+                                @endcan
+
+                                @can('delete licenses')
                                 <button wire:click="confirmDelete({{ $lic->id }})"
                                     class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm font-medium transition hover:underline">Delete</button>
+                                @endcan
                             </td>
                         </tr>
                         @empty
