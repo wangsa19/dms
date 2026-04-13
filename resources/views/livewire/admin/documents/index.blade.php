@@ -70,7 +70,7 @@
                                 </span>
                             </td>
                             <td class="p-3 align-middle whitespace-nowrap flex gap-3">
-                                <a href="{{ route('documents.show', $doc->id) }}"
+                                <a wire:navigate href="{{ route('documents.show', $doc->id) }}"
                                     class="text-emerald-600 hover:text-emerald-800 text-sm font-medium transition hover:underline">View</a>
                                 @can('edit documents')
                                 <button wire:click="edit({{ $doc->id }})"

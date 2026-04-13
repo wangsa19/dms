@@ -7,7 +7,7 @@
 
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">LICENSE DETAIL</h1>
-        <a href="/admin/licenses"
+        <a wire:navigate href="/admin/licenses"
             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg text-sm font-medium transition">
             &larr; Back to List
         </a>

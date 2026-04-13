@@ -74,7 +74,7 @@
                                 </span>
                             </td>
                             <td class="p-3 align-middle whitespace-nowrap flex gap-3">
-                                <a href="{{ route('licenses.show', $lic->id) }}"
+                                <a wire:navigate href="{{ route('licenses.show', $lic->id) }}"
                                     class="text-emerald-600 hover:text-emerald-800 text-sm font-medium transition hover:underline">View</a>
                                     
                                 @can('edit licenses')

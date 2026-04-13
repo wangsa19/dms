@@ -15,10 +15,10 @@ const initThemeToggle = () => {
 
     const themeToggleBtn = document.getElementById("theme-toggle");
     const themeToggleDarkIcon = document.getElementById(
-        "theme-toggle-dark-icon"
+        "theme-toggle-dark-icon",
     );
     const themeToggleLightIcon = document.getElementById(
-        "theme-toggle-light-icon"
+        "theme-toggle-light-icon",
     );
 
     const syncThemeToggleUI = () => {
@@ -109,9 +109,11 @@ const initAppEnhancements = () => {
                 colors: [pieColors[0], pieColors[1], pieColors[2]],
                 legend: { position: "bottom" },
             };
+            const categoryEl = document.querySelector("#category-chart");
+            categoryEl.innerHTML = "";
             new ApexCharts(
                 document.querySelector("#category-chart"),
-                optionsCategory
+                optionsCategory,
             ).render();
 
             var optionsType = {
@@ -121,9 +123,11 @@ const initAppEnhancements = () => {
                 colors: [pieColors[0], pieColors[3], pieColors[1]],
                 legend: { position: "bottom" },
             };
+            const typeEl = document.querySelector("#type-chart");
+            typeEl.innerHTML = "";
             new ApexCharts(
                 document.querySelector("#type-chart"),
-                optionsType
+                optionsType,
             ).render();
 
             var optionsDepartment = {
@@ -137,9 +141,11 @@ const initAppEnhancements = () => {
                 colors: [pieColors[2], pieColors[1], pieColors[0]],
                 legend: { position: "bottom" },
             };
+            const departmentEl = document.querySelector("#department-chart");
+            departmentEl.innerHTML = "";
             new ApexCharts(
                 document.querySelector("#department-chart"),
-                optionsDepartment
+                optionsDepartment,
             ).render();
 
             var optionsLine = {
@@ -174,13 +180,14 @@ const initAppEnhancements = () => {
                 legend: { position: "bottom" },
                 colors: [pieColors[3], pieColors[4]],
             };
+            const lineEl = document.querySelector("#docs-out-return-chart");
+            lineEl.innerHTML = "";
             new ApexCharts(
                 document.querySelector("#docs-out-return-chart"),
-                optionsLine
+                optionsLine,
             ).render();
         }
     }
-
 };
 
 document.addEventListener("DOMContentLoaded", initAppEnhancements);
