@@ -65,7 +65,12 @@ class Index extends Component
                     $query->where('department_id', $this->department_id);
                 }),
             ],
-            'owner_id'         => 'required|exists:employees,id',
+            'owner_id'         => [
+                'required',
+                Rule::exists('employees', 'id')->where(function ($query) {
+                    $query->where('department_id', $this->department_id);
+                }),
+            ],
             'status'           => 'required|string|max:50',
             'rack_id'          => 'nullable|exists:racks,id',
             'file'             => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
@@ -75,7 +80,30 @@ class Index extends Component
 
     public function render()
     {
+        $user = auth()->user();
+        $isAdmin = $user->hasRole('Admin'); // Cek apakah dia Admin
+
+        // 1. Filter Departemen: Jika bukan Admin, cuma bisa lihat departemennya sendiri
+        $departmentsQuery = Department::query();
+        if (!$isAdmin) {
+            $departmentsQuery->where('id', $user->employee->department_id);
+        }
+        $departments = $departmentsQuery->get();
+
+        // 2. Filter PIC (Employee): Harus sesuai dengan Departemen yang dipilih
+        $employeesQuery = Employee::query();
+        if ($this->department_id) {
+            $employeesQuery->where('department_id', $this->department_id);
+        } else {
+            // Jika belum pilih dept dan dia Admin, kosongkan dulu. 
+            // Jika bukan Admin, otomatis ke dept dia sendiri di method create/edit.
+            $employeesQuery->whereRaw('1 = 0');
+        }
+
         $documents = Document::with(['documentType', 'category', 'field', 'department', 'section', 'owner'])
+            ->when(!$isAdmin, function ($query) use ($user) {
+                return $query->where('department_id', $user->employee->department_id);
+            })
             ->where(function ($query) {
                 $query->where('name_id', 'like', '%' . $this->search . '%')
                     ->orWhere('name_jp', 'like', '%' . $this->search . '%');
@@ -88,13 +116,13 @@ class Index extends Component
             'documentTypes' => DocumentType::all(),
             'categories'    => Category::all(),
             'fields'        => Field::all(),
-            'departments'   => Department::all(),
+            'departments'   => $departments,
             'sections'      => Section::when(
                 $this->department_id,
                 fn($query) => $query->where('department_id', $this->department_id),
                 fn($query) => $query->whereRaw('1 = 0')
             )->get(),
-            'employees'     => Employee::all(),
+            'employees'     => $employeesQuery->get(),
             'racks'         => Rack::all(),
         ]);
     }
@@ -133,7 +161,16 @@ class Index extends Component
 
     public function create()
     {
-        $this->openModal();
+        $this->resetForm();
+        $this->resetErrorBag();
+
+        // Auto-fill departemen jika dia Supervisor/Senior Supervisor
+        $user = auth()->user();
+        if (!$user->hasRole('Admin')) {
+            $this->department_id = $user->employee->department_id;
+        }
+
+        $this->isOpen = true;
     }
 
     public function edit($id)
@@ -257,15 +294,13 @@ class Index extends Component
 
     public function updatedDepartmentId($value)
     {
-        if (!$value) {
-            $this->section_id = null;
-            return;
-        }
+        $this->section_id = null;
+        $this->owner_id = null;
 
-        if (
-            $this->section_id &&
-            !Section::where('id', $this->section_id)->where('department_id', $value)->exists()
-        ) {
+        if (!$value) return;
+
+        // Pastikan section yang dipilih sebelumnya masih valid di dept baru (sudah ada di kode lo)
+        if ($this->section_id && !Section::where('id', $this->section_id)->where('department_id', $value)->exists()) {
             $this->section_id = null;
         }
     }

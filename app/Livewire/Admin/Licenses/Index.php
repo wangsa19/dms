@@ -79,7 +79,14 @@ class Index extends Component
                     $query->where('department_id', $this->department_id);
                 }),
             ],
-            'owner_id'               => 'required|exists:employees,id',
+            'owner_id'         => [
+                'required',
+                'exists:employees,id',
+                // Validasi: Employee harus berasal dari department_id yang dipilih
+                Rule::exists('employees', 'id')->where(function ($query) {
+                    $query->where('department_id', $this->department_id);
+                }),
+            ],
             'rack_id'                  => 'nullable|exists:racks,id',
             'status'                 => 'required|string|max:50',
             // Aturan validasi file
@@ -90,11 +97,28 @@ class Index extends Component
 
     public function render()
     {
+        $user = auth()->user();
+        $isAdmin = $user->hasRole('Admin');
+
+        // Dropdown Departemen terfilter
+        $departments = Department::when(!$isAdmin, function ($q) use ($user) {
+            return $q->where('id', $user->employee->department_id);
+        })->get();
+
+        // Dropdown PIC terfilter berdasarkan departemen yang dipilih di form
+        $employees = Employee::when($this->department_id, function ($q) {
+            return $q->where('department_id', $this->department_id);
+        }, function ($q) {
+            return $q->whereRaw('1 = 0');
+        })->get();
+
         $licenses = License::with(['field', 'category', 'documentType', 'department', 'section', 'owner'])
+            ->when(!$isAdmin, function ($query) use ($user) {
+                return $query->where('department_id', $user->employee->department_id);
+            })
             ->where(function ($query) {
                 $query->where('name_id', 'like', '%' . $this->search . '%')
-                    ->orWhere('name_jp', 'like', '%' . $this->search . '%')
-                    ->orWhere('government_issuer', 'like', '%' . $this->search . '%');
+                    ->orWhere('name_jp', 'like', '%' . $this->search . '%');
             })
             ->latest()
             ->paginate($this->perPage);
@@ -104,13 +128,9 @@ class Index extends Component
             'fields'        => Field::all(),
             'categories'    => Category::all(),
             'documentTypes' => DocumentType::all(),
-            'departments'   => Department::all(),
-            'sections'      => Section::when(
-                $this->department_id,
-                fn($query) => $query->where('department_id', $this->department_id),
-                fn($query) => $query->whereRaw('1 = 0')
-            )->get(),
-            'employees'     => Employee::all(),
+            'departments'   => $departments,
+            'sections'      => Section::when($this->department_id, fn($q) => $q->where('department_id', $this->department_id))->get(),
+            'employees'     => $employees,
             'actionFrequencyUnits' => ActionFrequencyUnit::all(),
             'racks'         => Rack::all(),
         ]);
@@ -158,6 +178,11 @@ class Index extends Component
         abort_if(!auth()->user()->can('create licenses'), 403, 'Anda tidak memiliki akses untuk menambah lisensi.');
 
         $this->openModal();
+
+        $user = auth()->user();
+        if (!$user->hasRole('super-admin')) {
+            $this->department_id = $user->employee->department_id;
+        }
     }
 
     public function edit($id)

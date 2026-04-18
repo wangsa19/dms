@@ -30,6 +30,7 @@
                 MENU
             </li>
             {{-- Dashboard Link --}}
+            @can('access dashboard')
             <li>
                 <a wire:navigate href="{{ route('dashboard') }}"
                     class="flex items-center gap-4 p-3 rounded-md font-medium text-gray-700 dark:text-gray-200 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800
@@ -45,6 +46,7 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+            @endcan
 
             {{-- Documents Link --}}
             @can('view documents')
