@@ -20,7 +20,8 @@ class Show extends Component
             'department',
             'section',
             'actionFrequencyUnit',
-            'owner.user', // <--- UBAH DI SINI (tambahkan .user)
+            'owner.user',
+            'rack',
             'versions' => function ($query) {
                 $query->orderBy('version_number', 'desc');
             }

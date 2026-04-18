@@ -76,7 +76,7 @@
                             <td class="p-3 align-middle whitespace-nowrap flex gap-3">
                                 <a wire:navigate href="{{ route('licenses.show', $lic->id) }}"
                                     class="text-emerald-600 hover:text-emerald-800 text-sm font-medium transition hover:underline">View</a>
-                                    
+
                                 @can('edit licenses')
                                 <button wire:click="edit({{ $lic->id }})"
                                     class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium transition hover:underline">Edit</button>
@@ -265,13 +265,29 @@
                             {{-- Label Disamakan dengan Documents --}}
                             <label class="text-sm font-medium text-gray-700">Document Owner / PIC</label>
                             <select wire:model="owner_id"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400 disabled:opacity-60">
                                 <option value="">Select PIC...</option>
                                 @foreach($employees as $emp)
                                 <option value="{{ $emp->id }}">{{ $emp->name }}</option>
                                 @endforeach
                             </select>
                             @error('owner_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label for="rack_id" class="text-sm font-medium text-gray-700">Storage Location
+                                (Rack)</label>
+                            <select id="rack_id" wire:model="rack_id"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400 disabled:opacity-60">
+                                <option value="">-- No Rack (Digital Only) --</option>
+                                @foreach($racks as $rack)
+                                <option value="{{ $rack->id }}">
+                                    {{ $rack->code }} - {{ $rack->name }} (Col: {{ $rack->column }}, Row: {{ $rack->row
+                                    }})
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('rack_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         {{-- File Upload & Versioning --}}

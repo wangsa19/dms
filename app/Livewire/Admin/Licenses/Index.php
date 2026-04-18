@@ -4,9 +4,9 @@ namespace App\Livewire\Admin\Licenses;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\WithFileUploads; 
+use Livewire\WithFileUploads;
 use App\Models\License;
-use App\Models\LicenseVersion; 
+use App\Models\LicenseVersion;
 use App\Models\Field;
 use App\Models\Category;
 use App\Models\DocumentType;
@@ -14,14 +14,15 @@ use App\Models\Department;
 use App\Models\Section;
 use App\Models\Employee;
 use Carbon\Carbon;
-use App\Models\ActionFrequencyUnit; 
+use App\Models\ActionFrequencyUnit;
+use App\Models\Rack;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class Index extends Component
 {
-    use WithPagination, WithFileUploads; 
+    use WithPagination, WithFileUploads;
 
     // Form fields
     public $licenseId;
@@ -39,6 +40,7 @@ class Index extends Component
     public $department_id;
     public $section_id;
     public $owner_id;
+    public $rack_id;
     public $status = 'Active';
 
     // File Upload Fields
@@ -78,6 +80,7 @@ class Index extends Component
                 }),
             ],
             'owner_id'               => 'required|exists:employees,id',
+            'rack_id'                  => 'nullable|exists:racks,id',
             'status'                 => 'required|string|max:50',
             // Aturan validasi file
             'file'                   => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
@@ -109,6 +112,7 @@ class Index extends Component
             )->get(),
             'employees'     => Employee::all(),
             'actionFrequencyUnits' => ActionFrequencyUnit::all(),
+            'racks'         => Rack::all(),
         ]);
     }
 
@@ -143,7 +147,8 @@ class Index extends Component
             'section_id',
             'owner_id',
             'file',
-            'revision_notes'
+            'revision_notes',
+            'rack_id'
         ]);
         $this->status = 'Active';
     }
@@ -181,6 +186,7 @@ class Index extends Component
             $this->department_id          = $license->department_id;
             $this->section_id             = $license->section_id;
             $this->owner_id               = $license->owner_id;
+            $this->rack_id                = $license->rack_id;
             $this->status                 = $license->status;
 
             $this->resetErrorBag();
@@ -248,7 +254,7 @@ class Index extends Component
     public function delete()
     {
         abort_if(!auth()->user()->can('delete licenses'), 403, 'Anda tidak memiliki akses untuk menghapus lisensi.');
-        
+
         if ($this->licenseIdToDelete) {
             try {
                 $license = License::with('versions')->find($this->licenseIdToDelete);

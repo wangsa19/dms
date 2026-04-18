@@ -38,6 +38,7 @@ Route::prefix('admin')->middleware('is.login')->group(function () {
         Route::get('/category', App\Livewire\Admin\Manage\Category\Index::class)->name('category');
         Route::get('/section', App\Livewire\Admin\Manage\Section\Index::class)->name('section');
         Route::get('/field', App\Livewire\Admin\Manage\Field\Index::class)->name('field');
+        Route::get('/racks', App\Livewire\Admin\Manage\Rack\Index::class)->name('racks');
         Route::get('/document-type', App\Livewire\Admin\Manage\DocumentType\Index::class)->name('document-type');
         Route::get('/action-frequency-unit', App\Livewire\Admin\Manage\ActionFrequencyUnit\Index::class)->name('action-frequency-unit');
     });

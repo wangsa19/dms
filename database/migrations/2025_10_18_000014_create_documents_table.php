@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('department_id')->constrained('departments');
             $table->foreignId('section_id')->constrained('sections');
             $table->foreignId('owner_id')->constrained('employees');
+            $table->foreignId('rack_id')->nullable()->constrained('racks')->onDelete('set null');
             $table->string('status');
             $table->integer('current_version')->default(1);
             $table->index('document_type_id');

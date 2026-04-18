@@ -19,7 +19,8 @@ class Show extends Component
             'field',
             'department',
             'section',
-            'owner.user', // <--- UBAH DI SINI (tambahkan .user)
+            'owner.user',
+            'rack',
             'versions' => function ($query) {
                 $query->with('uploader')->orderBy('version_number', 'desc');
             }

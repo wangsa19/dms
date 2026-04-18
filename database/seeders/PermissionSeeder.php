@@ -37,8 +37,7 @@ class PermissionSeeder extends Seeder
             
             // Master Data - System Attributes
             'view categories', 'create categories', 'edit categories', 'delete categories',
-            'view fields', 'create fields', 'edit fields', 'delete fields',
-            'view document types', 'create document types', 'edit document types', 'delete document types',
+            'view fields', 'create fields', 'edit fields', 'delete fields', 'view racks', 'create racks', 'edit racks', 'delete racks', 'view document types', 'create document types', 'edit document types', 'delete document types',
             'view action frequency units', 'create action frequency units', 'edit action frequency units', 'delete action frequency units',
         ];
 

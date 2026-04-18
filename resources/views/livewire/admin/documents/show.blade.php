@@ -67,6 +67,18 @@
                             </a>
                         </p>
                     </div>
+                    <div>
+                        <p class="text-gray-500 font-medium">Physical Location</p>
+                        <p class="font-semibold text-gray-800">
+                            @if($document->rack)
+                            {{ $document->rack->name }} ({{ $document->rack->code }}) <br>
+                            <span class="text-xs text-gray-500">Column: {{ $document->rack->column }}, Row: {{
+                                $document->rack->row }}</span>
+                            @else
+                            <span class="text-gray-400 italic">No physical location assigned</span>
+                            @endif
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -13,6 +13,7 @@ use App\Models\Field;
 use App\Models\Department;
 use App\Models\Section;
 use App\Models\Employee;
+use App\Models\Rack;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,7 @@ class Index extends Component
     public $owner_id;
     public $status = 'Active';
 
+    public $rack_id;
     // File Upload Fields
     public $file;
     public $revision_notes;
@@ -65,6 +67,7 @@ class Index extends Component
             ],
             'owner_id'         => 'required|exists:employees,id',
             'status'           => 'required|string|max:50',
+            'rack_id'          => 'nullable|exists:racks,id',
             'file'             => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png|max:10240',
             'revision_notes'   => 'nullable|string|max:500',
         ];
@@ -92,6 +95,7 @@ class Index extends Component
                 fn($query) => $query->whereRaw('1 = 0')
             )->get(),
             'employees'     => Employee::all(),
+            'racks'         => Rack::all(),
         ]);
     }
 
@@ -121,7 +125,8 @@ class Index extends Component
             'owner_id',
             'status',
             'file',
-            'revision_notes' // Reset file
+            'revision_notes',
+            'rack_id'
         ]);
         $this->status = 'Active';
     }
@@ -146,6 +151,7 @@ class Index extends Component
             $this->section_id       = $document->section_id;
             $this->owner_id         = $document->owner_id;
             $this->status           = $document->status;
+            $this->rack_id    = $document->rack_id;
 
             $this->resetErrorBag();
             $this->isOpen = true;

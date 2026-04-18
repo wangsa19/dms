@@ -47,4 +47,9 @@ class Document extends Model
     {
         return $this->hasMany(DocumentOut::class);
     }
+
+    public function rack()
+    {
+        return $this->belongsTo(Rack::class);
+    }
 }

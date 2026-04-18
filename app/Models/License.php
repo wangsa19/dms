@@ -43,6 +43,11 @@ class License extends Model
         return $this->belongsTo(Field::class);
     }
 
+    public function rack()
+    {
+        return $this->belongsTo(Rack::class);
+    }
+
     public function actionFrequencyUnit()
     {
         return $this->belongsTo(ActionFrequencyUnit::class, 'action_frequency_unit_id');

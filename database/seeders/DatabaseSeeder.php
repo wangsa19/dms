@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             DocumentTypeSeeder::class,
             ActionFrequencyUnitSeeder::class,
+            RackSeeder::class,
         ]);
     }
 }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('field_id')->constrained('fields');
             $table->foreignId('department_id')->constrained('departments');
             $table->foreignId('owner_id')->constrained('employees');
+            $table->foreignId('rack_id')->nullable()->constrained('racks')->onDelete('set null');
             $table->string('status');
             $table->date('start_date');
             $table->date('end_date');

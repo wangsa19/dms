@@ -215,6 +215,23 @@
                             @error('owner_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
+                        <div>
+                            <label for="rack_id" class="text-sm font-medium text-gray-700">Storage Location
+                                (Rack)</label>
+                            <select id="rack_id" wire:model="rack_id"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
+                                <option value="">Select Rack</option>
+                                {{-- <option value="">-- No Rack (Digital Only) --</option> --}}
+                                @foreach($racks as $rack)
+                                <option value="{{ $rack->id }}">
+                                    {{ $rack->code }} - {{ $rack->name }} (Col: {{ $rack->column }}, Row: {{ $rack->row
+                                    }})
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('rack_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+
                         {{-- File Upload & Versioning --}}
                         <div class="col-span-2 border-t pt-4 mt-2">
                             <h4 class="text-sm font-bold text-gray-800 mb-4">Upload File & Versioning</h4>

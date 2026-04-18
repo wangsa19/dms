@@ -179,6 +179,12 @@
                     </li>
                     @endcan
 
+                    @can('view racks')
+                    <li><a wire:navigate href="{{ route('manage.racks') }}"
+                            class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.racks') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Racks</a>
+                    </li>
+                    @endcan
+
                     @can('view document types')
                     <li><a wire:navigate href="{{ route('manage.document-type') }}"
                             class="block p-2 rounded-md text-sm cursor-pointer {{ request()->routeIs('manage.document-type') ? 'text-[#d90000] font-semibold' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white' }}">Document Types</a>

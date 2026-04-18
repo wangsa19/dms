@@ -93,6 +93,19 @@
                             </a>
                         </p>
                     </div>
+                    <div>
+                        <p class="text-gray-500 font-medium text-xs uppercase tracking-wider">Physical Storage</p>
+                        <p class="font-semibold text-gray-800">
+                            @if($license->rack)
+                            <span class="text-blue-600">{{ $license->rack->code }}</span> - {{ $license->rack->name }}
+                            <br>
+                            <span class="text-xs text-gray-500">Column: {{ $license->rack->column }}, Row: {{
+                                $license->rack->row }}</span>
+                            @else
+                            <span class="text-gray-400 italic">No physical location</span>
+                            @endif
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
