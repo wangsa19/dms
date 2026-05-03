@@ -1,5 +1,6 @@
 import "./bootstrap";
 
+// --- Logic Theme ---
 const applySavedTheme = () => {
     const storedTheme = localStorage.getItem("color-theme");
     const shouldUseDark =
@@ -12,7 +13,6 @@ const applySavedTheme = () => {
 
 const initThemeToggle = () => {
     applySavedTheme();
-
     const themeToggleBtn = document.getElementById("theme-toggle");
     const themeToggleDarkIcon = document.getElementById(
         "theme-toggle-dark-icon",
@@ -23,20 +23,15 @@ const initThemeToggle = () => {
 
     const syncThemeToggleUI = () => {
         const isDark = document.documentElement.classList.contains("dark");
-
-        if (themeToggleDarkIcon) {
+        if (themeToggleDarkIcon)
             themeToggleDarkIcon.classList.toggle("hidden", isDark);
-        }
-        if (themeToggleLightIcon) {
+        if (themeToggleLightIcon)
             themeToggleLightIcon.classList.toggle("hidden", !isDark);
-        }
-
         if (themeToggleBtn) {
-            const nextModeLabel = isDark
+            const label = isDark
                 ? "Switch to light mode"
                 : "Switch to dark mode";
-            themeToggleBtn.setAttribute("aria-label", nextModeLabel);
-            themeToggleBtn.setAttribute("title", nextModeLabel);
+            themeToggleBtn.setAttribute("aria-label", label);
         }
     };
 
@@ -44,150 +39,76 @@ const initThemeToggle = () => {
 
     if (themeToggleBtn && !themeToggleBtn.dataset.themeBound) {
         themeToggleBtn.dataset.themeBound = "true";
-
-        themeToggleBtn.addEventListener("click", function () {
-            const isDark = document.documentElement.classList.contains("dark");
-            const nextIsDark = !isDark;
-
-            document.documentElement.classList.toggle("dark", nextIsDark);
-            localStorage.setItem("color-theme", nextIsDark ? "dark" : "light");
-
+        themeToggleBtn.addEventListener("click", () => {
+            const isDark = document.documentElement.classList.toggle("dark");
+            localStorage.setItem("color-theme", isDark ? "dark" : "light");
             syncThemeToggleUI();
         });
     }
 };
 
+const renderDynamicChart = (selector, options) => {
+    const el = document.querySelector(selector);
+    if (!el || typeof ApexCharts === "undefined") return;
+
+    // PENTING: Kosongkan elemen agar tidak menumpuk saat fungsi dipanggil berkali-kali
+    el.innerHTML = "";
+
+    const labels = JSON.parse(el.dataset.labels || "[]");
+    const series = JSON.parse(el.dataset.series || "[]");
+
+    const config = {
+        ...options,
+        series: series,
+        labels: labels,
+    };
+
+    const chart = new ApexCharts(el, config);
+    chart.render();
+};
+
+const initCharts = () => {
+    const pieColors = ["#e74c3c", "#1abc9c", "#f1c40f", "#3498db", "#9b59b6"];
+
+    renderDynamicChart("#category-chart", {
+        chart: { type: "pie", height: 320 },
+        colors: pieColors, // Ini sudah benar
+        legend: { position: "bottom" },
+    });
+
+    renderDynamicChart("#type-chart", {
+        chart: { type: "pie", height: 320 },
+        colors: pieColors, // Cukup panggil variabelnya saja, jangan dibungkus []
+        legend: { position: "bottom" },
+    });
+
+    renderDynamicChart("#department-chart", {
+        chart: { type: "donut", height: 320 },
+        colors: pieColors, // Cukup panggil variabelnya saja
+        legend: { position: "bottom" },
+    });
+
+    const lineEl = document.querySelector("#docs-out-return-chart");
+    if (lineEl) {
+        lineEl.innerHTML = "";
+        const labels = JSON.parse(lineEl.dataset.labels || "[]");
+        const series = JSON.parse(lineEl.dataset.series || "[]");
+
+        new ApexCharts(lineEl, {
+            series: series,
+            chart: { type: "line", height: 350, toolbar: { show: false } },
+            stroke: { curve: "smooth", width: 3 },
+            xaxis: { categories: labels },
+            colors: ["#e74c3c", "#1abc9c"], // Merah untuk Out, Hijau untuk Return
+            legend: { position: "top" },
+        }).render();
+    }
+};
+
+// --- Inisialisasi Aplikasi ---
 const initAppEnhancements = () => {
     initThemeToggle();
-
-    // --- Logika untuk Sidebar (akan aktif di semua halaman) ---
-    // const menuIcon = document.querySelector(".main-header .menu-icon");
-    // const sidebarOverlay = document.querySelector(".sidebar-overlay");
-    // const body = document.body;
-
-    // if (menuIcon) {
-    //     menuIcon.addEventListener("click", () => {
-    //         // Cek lebar layar saat ikon diklik
-    //         if (window.innerWidth <= 1024) {
-    //             // Logika untuk mobile: buka/tutup dengan overlay
-    //             body.classList.toggle("sidebar-mobile-open");
-    //         } else {
-    //             // Logika untuk desktop: ciutkan/lebarkan
-    //             body.classList.toggle("sidebar-collapsed");
-    //         }
-    //     });
-    // }
-
-    // if (sidebarOverlay) {
-    //     // Tutup sidebar jika overlay diklik
-    //     sidebarOverlay.addEventListener("click", () => {
-    //         body.classList.remove("sidebar-mobile-open");
-    //     });
-    // }
-
-    // --- Logika untuk Chart (hanya akan berjalan di halaman dashboard) ---
-    // Cek jika elemen chart ada sebelum merendernya
-    if (document.querySelector("#category-chart")) {
-        // Pastikan ApexCharts tersedia dari CDN
-        if (typeof ApexCharts !== "undefined") {
-            const pieColors = [
-                "#e74c3c",
-                "#1abc9c",
-                "#f1c40f",
-                "#3498db",
-                "#9b59b6",
-            ];
-
-            var optionsCategory = {
-                series: [33.3, 33.3, 33.3],
-                chart: { type: "pie", height: 320 },
-                labels: [
-                    "Employment",
-                    "Plant Operation",
-                    "Management of building",
-                ],
-                colors: [pieColors[0], pieColors[1], pieColors[2]],
-                legend: { position: "bottom" },
-            };
-            const categoryEl = document.querySelector("#category-chart");
-            categoryEl.innerHTML = "";
-            new ApexCharts(
-                document.querySelector("#category-chart"),
-                optionsCategory,
-            ).render();
-
-            var optionsType = {
-                series: [33.3, 33.3, 33.3],
-                chart: { type: "pie", height: 320 },
-                labels: ["notification", "Report", "License"],
-                colors: [pieColors[0], pieColors[3], pieColors[1]],
-                legend: { position: "bottom" },
-            };
-            const typeEl = document.querySelector("#type-chart");
-            typeEl.innerHTML = "";
-            new ApexCharts(
-                document.querySelector("#type-chart"),
-                optionsType,
-            ).render();
-
-            var optionsDepartment = {
-                series: [66.7, 16.7, 16.7],
-                chart: { type: "donut", height: 320 },
-                labels: [
-                    "PRODUCTION PREPARATION",
-                    "MAINTENANCE",
-                    "QUALITY ASSURANCE",
-                ],
-                colors: [pieColors[2], pieColors[1], pieColors[0]],
-                legend: { position: "bottom" },
-            };
-            const departmentEl = document.querySelector("#department-chart");
-            departmentEl.innerHTML = "";
-            new ApexCharts(
-                document.querySelector("#department-chart"),
-                optionsDepartment,
-            ).render();
-
-            var optionsLine = {
-                series: [
-                    {
-                        name: "Docs Out",
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.9, 1.0, 1.0],
-                    },
-                    {
-                        name: "Docs Return",
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    },
-                ],
-                chart: { height: 350, type: "line", toolbar: { show: false } },
-                stroke: { curve: "smooth", width: 2 },
-                xaxis: {
-                    categories: [
-                        "Mar-24",
-                        "Apr-24",
-                        "May-24",
-                        "Jun-24",
-                        "Jul-24",
-                        "Aug-24",
-                        "Sep-24",
-                        "Nov-24",
-                        "Dec-24",
-                        "Jan-25",
-                        "Feb-25",
-                    ],
-                },
-                yaxis: { min: 0, max: 1.0 },
-                legend: { position: "bottom" },
-                colors: [pieColors[3], pieColors[4]],
-            };
-            const lineEl = document.querySelector("#docs-out-return-chart");
-            lineEl.innerHTML = "";
-            new ApexCharts(
-                document.querySelector("#docs-out-return-chart"),
-                optionsLine,
-            ).render();
-        }
-    }
+    initCharts();
 };
 
 document.addEventListener("DOMContentLoaded", initAppEnhancements);

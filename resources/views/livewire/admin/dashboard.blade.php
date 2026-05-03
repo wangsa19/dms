@@ -9,8 +9,20 @@
             <h6 class="text-sm font-medium text-gray-500 mb-2">ALL DOCUMENTS</h6>
             <div class="flex justify-between items-start">
                 <div>
-                    <p class="text-3xl font-bold">3 <span class="text-base font-medium text-gray-500">Docs</span></p>
-                    <a href="#" class="text-sm text-gray-500 hover:text-yazaki-red mt-4 block">View all documents</a>
+                    <p class="text-3xl font-bold">{{ $totalDocuments }} <span
+                            class="text-base font-medium text-gray-500">Docs</span></p>
+                    <div class="relative group">
+                        <button class="text-sm text-gray-500 hover:text-yazaki-red mt-4 block focus:outline-none">
+                            View all documents ▼
+                        </button>
+                        <div
+                            class="absolute left-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <a href="{{ route('documents') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">All Documents</a>
+                            <a href="{{ route('licenses') }}"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">All Licenses</a>
+                        </div>
+                    </div>
                 </div>
                 <svg class="h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -29,8 +41,10 @@
             <h6 class="text-sm font-medium text-gray-500 mb-2">DOCUMENTS OUT</h6>
             <div class="flex justify-between items-start">
                 <div>
-                    <p class="text-3xl font-bold">0 <span class="text-base font-medium text-gray-500">Docs</span></p>
-                    <a href="#" class="text-sm text-gray-500 hover:text-yazaki-red mt-4 block">View all documents</a>
+                    <p class="text-3xl font-bold">{{ $totalDocsOut }} <span
+                            class="text-base font-medium text-gray-500">Docs</span></p>
+                    <a href="{{ route('document-out') }}"
+                        class="text-sm text-gray-500 hover:text-yazaki-red mt-4 block">View all documents</a>
                 </div>
                 <svg class="h-10 w-10 text-red-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -47,8 +61,10 @@
             <h6 class="text-sm font-medium text-gray-500 mb-2">TODAY DOCS, OUT</h6>
             <div class="flex justify-between items-start">
                 <div>
-                    <p class="text-3xl font-bold">0 <span class="text-base font-medium text-gray-500">Docs</span></p>
-                    <a href="#" class="text-sm text-gray-500 hover:text-yazaki-red mt-4 block">View all documents</a>
+                    <p class="text-3xl font-bold">{{ $todayDocsOut }} <span
+                            class="text-base font-medium text-gray-500">Docs</span></p>
+                    <a href="{{ route('document-out') }}"
+                        class="text-sm text-gray-500 hover:text-yazaki-red mt-4 block">View all documents</a>
                 </div>
                 <svg class="h-10 w-10 text-yellow-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -68,8 +84,10 @@
             <h6 class="text-sm font-medium text-gray-500 mb-2">TODAY DOCS, RETURN</h6>
             <div class="flex justify-between items-start">
                 <div>
-                    <p class="text-3xl font-bold">0 <span class="text-base font-medium text-gray-500">Docs</span></p>
-                    <a href="#" class="text-sm text-gray-500 hover:text-yazaki-red mt-4 block">View all documents</a>
+                    <p class="text-3xl font-bold">{{ $todayDocsReturn }} <span
+                            class="text-base font-medium text-gray-500">Docs</span></p>
+                    <a href="{{ route('document-out') }}"
+                        class="text-sm text-gray-500 hover:text-yazaki-red mt-4 block">View all documents</a>
                 </div>
                 <svg class="h-10 w-10 text-green-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -90,19 +108,26 @@
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
             <h5 class="font-semibold text-gray-800 border-b border-gray-200 py-4 px-5">Documents per Category</h5>
             <div class="p-5">
-                <div id="category-chart"></div>
+                {{-- Update bagian div chart category --}}
+                <div id="category-chart" data-labels='@json($categoryData->pluck("name"))'
+                    data-series='@json($categoryData->pluck("documents_count"))'>
+                </div>
             </div>
         </div>
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
             <h5 class="font-semibold text-gray-800 border-b border-gray-200 py-4 px-5">Documents per Type</h5>
             <div class="p-5">
-                <div id="type-chart"></div>
+                <div id="type-chart" data-labels='@json($typeData->pluck("name"))'
+                    data-series='@json($typeData->pluck("documents_count"))'>
+                </div>
             </div>
         </div>
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
             <h5 class="font-semibold text-gray-800 border-b border-gray-200 py-4 px-5">Documents per Department</h5>
             <div class="p-5">
-                <div id="department-chart"></div>
+                <div id="department-chart" data-labels='@json($departmentData->pluck("name"))'
+                    data-series='@json($departmentData->pluck("documents_count"))'>
+                </div>
             </div>
         </div>
     </div>
@@ -112,7 +137,9 @@
         <div class="lg:col-span-2 bg-white rounded-lg border border-gray-200 shadow-sm">
             <h5 class="font-semibold text-gray-800 border-b border-gray-200 py-4 px-5">Documents Out & Return</h5>
             <div class="p-5">
-                <div id="docs-out-return-chart"></div>
+                <div id="docs-out-return-chart" data-labels='@json($outReturnLabels)'
+                    data-series='@json($outReturnSeries)'>
+                </div>
             </div>
         </div>
         <div class="lg:col-span-1 bg-white rounded-lg border border-gray-200 shadow-sm">
@@ -128,21 +155,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($latestDocuments as $doc)
                             <tr class="border-b border-gray-200">
-                                <td class="p-2">Coba 2</td>
-                                <td class="p-2">notification</td>
-                                <td class="p-2">2025-02-01 22:3</td>
+                                <td class="p-2">{{ $doc->name_id }}</td>
+                                <td class="p-2">{{ $doc->documentType->name ?? '-' }}</td>
+                                <td class="p-2">{{ $doc->created_at->format('Y-m-d H:i') }}</td>
                             </tr>
-                            <tr class="border-b border-gray-200">
-                                <td class="p-2">Coba 1</td>
-                                <td class="p-2">Report</td>
-                                <td class="p-2">2025-02-01 22:3</td>
-                            </tr>
-                            <tr>
-                                <td class="p-2">Akta No.5 Tentang...</td>
-                                <td class="p-2">License</td>
-                                <td class="p-2">2025-01-26 0:25</td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
