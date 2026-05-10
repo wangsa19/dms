@@ -106,10 +106,10 @@
                             <span class="ml-2 group-hover:text-gray-900 dark:group-hover:text-white transition">Remember
                                 me</span>
                         </label>
-                        <a href="#"
+                        {{-- <a href="#"
                             class="font-semibold text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 transition">
                             Forgot password?
-                        </a>
+                        </a> --}}
                     </div>
 
                     {{-- Submit Button --}}

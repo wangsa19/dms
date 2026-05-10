@@ -47,6 +47,11 @@ class User extends Authenticatable
         return $this->belongsTo(Employee::class);
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
     /**
      * Menentukan route dashboard berdasarkan role user.
      */

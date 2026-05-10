@@ -8,7 +8,7 @@ use App\Livewire\Admin\Licenses\Show as LicenseDetail;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/sign-in', App\Livewire\Auth\SignIn::class)->name('login');
@@ -27,6 +27,7 @@ Route::prefix('admin')->middleware('is.login')->group(function () {
     Route::get('/licenses', App\Livewire\Admin\Licenses\Index::class)->name('licenses');
     Route::get('/licenses/{id}', LicenseDetail::class)->name('licenses.show');
 
+    Route::get('/notifications', \App\Livewire\Admin\Notifications\Index::class)->name('admin.notifications.index');
 
     Route::prefix('manage')->name('manage.')->group(function () {
         Route::get('/user', App\Livewire\Admin\Manage\User\Index::class)->name('user');

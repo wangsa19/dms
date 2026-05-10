@@ -54,7 +54,8 @@
     }" x-init="init()" :class="{ 
         'sidebar-mobile-open': isMobileOpen, 
         'sidebar-collapsed': isDesktopCollapsed 
-    }" class="bg-gray-200 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-200 flex flex-col md:flex-row min-h-screen group/sidebar">
+    }"
+    class="bg-gray-200 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-200 flex flex-col md:flex-row min-h-screen group/sidebar">
 
     <div id="breakpoint-check" class="hidden lg:block w-0 h-0 absolute -z-50"></div>
 
@@ -106,16 +107,7 @@
                     <x-heroicon-o-sun id="theme-toggle-light-icon" class="hidden w-5 h-5" />
                 </button>
                 {{-- Notification --}}
-                <div class="relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                    </svg>
-                    <div class="notification-badge absolute -top-1 -right-2 bg-[#d90000]
-                        text-white text-[10px] w-5 h-5 rounded-full flex items-center
-                        justify-center font-bold">3</div>
-                </div>
+                <livewire:admin.components.notification-bell />
                 {{-- User Info --}}
                 {{-- User Info & Dropdown --}}
                 <div class="relative" x-data="{ userDropdownOpen: false }">
