@@ -1,6 +1,60 @@
 <div>
-    <div class="text-sm text-gray-500 mb-4">Dashboards > Document Analytics</div>
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">DOCUMENT ANALYTICS</h1>
+    <div class="text-sm text-gray-500 mb-4">Dashboards > {{ $role === 'Admin' ? 'Document Analytics' : 'Department
+        Overview' }}</div>
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">
+        {{ $role === 'Admin' ? 'DOCUMENT ANALYTICS' : 'MY DEPARTMENT DASHBOARD' }}
+    </h1>
+
+    @if($role === 'Admin')
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+        {{-- Card: TOTAL USERS --}}
+        <div
+            class="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+            <h6 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">TOTAL USERS</h6>
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-3xl font-bold text-gray-800 dark:text-white">
+                        {{ $totalUsers }} <span
+                            class="text-base font-medium text-gray-500 dark:text-gray-400">Users</span>
+                    </p>
+                    <a wire:navigate href="{{ route('manage.user') }}"
+                        class="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 mt-4 block transition">
+                        Manage all users
+                    </a>
+                </div>
+                <svg class="h-10 w-10 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
+        </div>
+
+        {{-- Card: TOTAL LICENSES --}}
+        <div
+            class="bg-white dark:bg-gray-800 p-5 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+            <h6 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">TOTAL LICENSES</h6>
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-3xl font-bold text-gray-800 dark:text-white">
+                        {{ $totalLicenses }} <span
+                            class="text-base font-medium text-gray-500 dark:text-gray-400">Licenses</span>
+                    </p>
+                    <a wire:navigate href="{{ route('licenses') }}"
+                        class="text-sm text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 mt-4 block transition">
+                        View all licenses
+                    </a>
+                </div>
+                <svg class="h-10 w-10 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+        </div>
+
+    </div>
 
     {{-- STATS GRID --}}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -108,26 +162,22 @@
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
             <h5 class="font-semibold text-gray-800 border-b border-gray-200 py-4 px-5">Documents per Category</h5>
             <div class="p-5">
-                {{-- Update bagian div chart category --}}
                 <div id="category-chart" data-labels='@json($categoryData->pluck("name"))'
-                    data-series='@json($categoryData->pluck("documents_count"))'>
-                </div>
+                    data-series='@json($categoryData->pluck("documents_count"))'></div>
             </div>
         </div>
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
             <h5 class="font-semibold text-gray-800 border-b border-gray-200 py-4 px-5">Documents per Type</h5>
             <div class="p-5">
                 <div id="type-chart" data-labels='@json($typeData->pluck("name"))'
-                    data-series='@json($typeData->pluck("documents_count"))'>
-                </div>
+                    data-series='@json($typeData->pluck("documents_count"))'></div>
             </div>
         </div>
         <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
             <h5 class="font-semibold text-gray-800 border-b border-gray-200 py-4 px-5">Documents per Department</h5>
             <div class="p-5">
                 <div id="department-chart" data-labels='@json($departmentData->pluck("name"))'
-                    data-series='@json($departmentData->pluck("documents_count"))'>
-                </div>
+                    data-series='@json($departmentData->pluck("documents_count"))'></div>
             </div>
         </div>
     </div>
@@ -138,8 +188,7 @@
             <h5 class="font-semibold text-gray-800 border-b border-gray-200 py-4 px-5">Documents Out & Return</h5>
             <div class="p-5">
                 <div id="docs-out-return-chart" data-labels='@json($outReturnLabels)'
-                    data-series='@json($outReturnSeries)'>
-                </div>
+                    data-series='@json($outReturnSeries)'></div>
             </div>
         </div>
         <div class="lg:col-span-1 bg-white rounded-lg border border-gray-200 shadow-sm">
@@ -147,19 +196,19 @@
             <div class="p-5">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead class="text-left">
+                        <thead class="text-left bg-gray-50">
                             <tr>
-                                <th class="p-2 font-semibold">Document Name</th>
-                                <th class="p-2 font-semibold">Type</th>
-                                <th class="p-2 font-semibold">Upload At</th>
+                                <th class="p-3 font-semibold">Document Name</th>
+                                <th class="p-3 font-semibold">Type</th>
+                                <th class="p-3 font-semibold">Upload At</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($latestDocuments as $doc)
-                            <tr class="border-b border-gray-200">
-                                <td class="p-2">{{ $doc->name_id }}</td>
-                                <td class="p-2">{{ $doc->documentType->name ?? '-' }}</td>
-                                <td class="p-2">{{ $doc->created_at->format('Y-m-d H:i') }}</td>
+                            <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                <td class="p-3">{{ $doc->name_id }}</td>
+                                <td class="p-3">{{ $doc->documentType->name ?? '-' }}</td>
+                                <td class="p-3">{{ $doc->created_at->format('Y-m-d') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -168,4 +217,103 @@
             </div>
         </div>
     </div>
+
+    {{-- Bagian @else (Supervisor Role) --}}
+    @else
+    {{-- 1. STATS GRID (Baris Atas: Total Dokumen & Total Lisensi) --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {{-- Card: Total Dokumen --}}
+        <div
+            class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-5">
+            <div class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-4 rounded-full">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2">
+                    </path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-gray-500 dark:text-gray-400 font-medium text-sm">Total Dokumen</h3>
+                <p class="text-4xl font-bold text-gray-800 dark:text-white mt-1">{{ $totalDocs }}</p>
+            </div>
+        </div>
+
+        {{-- Card: Total Lisensi --}}
+        <div
+            class="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm flex items-center gap-5">
+            <div class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-4 rounded-full">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                    </path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-gray-500 dark:text-gray-400 font-medium text-sm">Total Lisensi</h3>
+                <p class="text-4xl font-bold text-gray-800 dark:text-white mt-1">{{ $totalLicenses }}</p>
+            </div>
+        </div>
+    </div>
+
+    {{-- 2. DETAIL GRID (Baris Bawah: Reminder Lisensi & Dokumen Terbaru) --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {{-- Card: Reminder Lisensi (2 Kolom di Layar Lebar) --}}
+        <div
+            class="bg-white dark:bg-gray-800 rounded-lg border border-red-200 dark:border-red-900/50 shadow-sm lg:col-span-2 overflow-hidden">
+            <div
+                class="bg-red-50 dark:bg-red-900/20 px-5 py-4 border-b border-red-100 dark:border-red-900/30 flex items-center gap-2">
+                <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
+                </svg>
+                <h3 class="font-bold text-red-800 dark:text-red-400">Reminder Lisensi</h3>
+            </div>
+            <ul class="divide-y divide-gray-100 dark:divide-gray-700">
+                @forelse($expiringLicenses as $license)
+                <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex justify-between items-center transition">
+                    <div>
+                        <p class="font-medium text-gray-800 dark:text-gray-200">{{ $license->name_id }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Berakhir: {{
+                            \Carbon\Carbon::parse($license->end_date)->format('d M Y') }}</p>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 rounded-full text-xs font-semibold">Expired
+                        Soon</span>
+                </li>
+                @empty
+                <li class="p-8 text-center text-gray-500 dark:text-gray-400">Tidak ada reminder lisensi saat ini.</li>
+                @endforelse
+            </ul>
+        </div>
+
+        {{-- Card: Dokumen Terbaru (1 Kolom) --}}
+        <div
+            class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+            <h5
+                class="font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 py-4 px-5">
+                Dokumen Terbaru</h5>
+            <div class="p-0 overflow-x-auto">
+                <table class="w-full text-sm">
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                        @forelse($latestDocs as $doc)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <td class="p-4">
+                                <p class="font-medium text-gray-800 dark:text-gray-200">{{ $doc->name_id }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{
+                                    $doc->created_at->diffForHumans() }}</p>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td class="p-8 text-center text-gray-500 dark:text-gray-400">Belum ada dokumen.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
