@@ -201,6 +201,21 @@
                         @error('section_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
+                    {{-- Section (Dependent Dropdown) --}}
+                    <div>
+                        <label for="section_id" class="text-sm font-medium text-gray-700">Section</label>
+                        <select id="section_id" wire:model="section_id"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 bg-white"
+                            @if(empty($sections)) disabled @endif>
+                            <option value="">{{ empty($sections) ? 'Select Department First' : 'Select Section' }}
+                            </option>
+                            @foreach($sections as $sect)
+                            <option value="{{ $sect->id }}">{{ $sect->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('section_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
                     {{-- Position --}}
                     <div>
                         <label for="position_id" class="text-sm font-medium text-gray-700">Position</label>
@@ -214,7 +229,46 @@
                         @error('position_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                </div>
+                    {{-- SEPARATOR UNTUK AKUN SISTEM --}}
+                    <div class="md:col-span-2 border-t border-gray-200 pt-6 mt-2">
+                        <h4 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-1">System Account
+                            (Optional)</h4>
+                        <p class="text-xs text-gray-500 mb-4">Fill in the email and role to automatically create a login
+                            account for this employee.</p>
+                    </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label for="email" class="text-sm font-medium text-gray-700">Email Address</label>
+                        <input id="email" wire:model="email" type="email"
+                            placeholder="Leave blank if no system access needed"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
+                        @error('email') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    {{-- Role --}}
+                    <div>
+                        <label for="role_name" class="text-sm font-medium text-gray-700">System Role</label>
+                        <select id="role_name" wire:model="role_name"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 bg-white">
+                            <option value="">Select Role</option>
+                            @foreach($roles as $role)
+                            <option value="{{ $role->name }}">{{ $role->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('role_name') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    {{-- Password --}}
+                    <div class="md:col-span-2">
+                        <label for="password" class="text-sm font-medium text-gray-700">Password</label>
+                        <input id="password" wire:model="password" type="password"
+                            placeholder="{{ $userId ? 'Leave blank to keep current password' : 'Min. 6 characters (Required if Email is filled)' }}"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
+                        @error('password') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                </div> {{-- Penutup Grid Cols 2 --}}
 
                 {{-- Modal Buttons --}}
                 <div class="flex justify-end gap-3 mt-8">

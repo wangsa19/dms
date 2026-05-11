@@ -81,29 +81,15 @@ class Index extends Component
     public function render()
     {
         $user = auth()->user();
-        $isAdmin = $user->hasRole('Admin'); // Cek apakah dia Admin
 
-        // 1. Filter Departemen: Jika bukan Admin, cuma bisa lihat departemennya sendiri
-        $departmentsQuery = Department::query();
-        if (!$isAdmin) {
-            $departmentsQuery->where('id', $user->employee->department_id);
-        }
-        $departments = $departmentsQuery->get();
-
-        // 2. Filter PIC (Employee): Harus sesuai dengan Departemen yang dipilih
-        $employeesQuery = Employee::query();
-        if ($this->department_id) {
-            $employeesQuery->where('department_id', $this->department_id);
-        } else {
-            // Jika belum pilih dept dan dia Admin, kosongkan dulu. 
-            // Jika bukan Admin, otomatis ke dept dia sendiri di method create/edit.
-            $employeesQuery->whereRaw('1 = 0');
-        }
-
-        $documents = Document::with(['documentType', 'category', 'field', 'department', 'section', 'owner'])
-            ->when(!$isAdmin, function ($query) use ($user) {
-                return $query->where('department_id', $user->employee->department_id);
-            })
+        $documents = Document::with([
+            'documentType',
+            'category',
+            'field',
+            'department',
+            'section',
+            'owner'
+        ])
             ->where(function ($query) {
                 $query->where('name_id', 'like', '%' . $this->search . '%')
                     ->orWhere('name_jp', 'like', '%' . $this->search . '%');
@@ -116,13 +102,9 @@ class Index extends Component
             'documentTypes' => DocumentType::all(),
             'categories'    => Category::all(),
             'fields'        => Field::all(),
-            'departments'   => $departments,
-            'sections'      => Section::when(
-                $this->department_id,
-                fn($query) => $query->where('department_id', $this->department_id),
-                fn($query) => $query->whereRaw('1 = 0')
-            )->get(),
-            'employees'     => $employeesQuery->get(),
+            'departments'   => Department::all(),           // Semua department
+            'sections'      => Section::all(),              // Semua section
+            'employees'     => Employee::with('user')->get(), // Semua employee
             'racks'         => Rack::all(),
         ]);
     }

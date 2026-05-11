@@ -97,25 +97,14 @@ class Index extends Component
 
     public function render()
     {
-        $user = auth()->user();
-        $isAdmin = $user->hasRole('Admin');
-
-        // Dropdown Departemen terfilter
-        $departments = Department::when(!$isAdmin, function ($q) use ($user) {
-            return $q->where('id', $user->employee->department_id);
-        })->get();
-
-        // Dropdown PIC terfilter berdasarkan departemen yang dipilih di form
-        $employees = Employee::when($this->department_id, function ($q) {
-            return $q->where('department_id', $this->department_id);
-        }, function ($q) {
-            return $q->whereRaw('1 = 0');
-        })->get();
-
-        $licenses = License::with(['field', 'category', 'documentType', 'department', 'section', 'owner'])
-            ->when(!$isAdmin, function ($query) use ($user) {
-                return $query->where('department_id', $user->employee->department_id);
-            })
+        $licenses = License::with([
+            'field',
+            'category',
+            'documentType',
+            'department',
+            'section',
+            'owner'
+        ])
             ->where(function ($query) {
                 $query->where('name_id', 'like', '%' . $this->search . '%')
                     ->orWhere('name_jp', 'like', '%' . $this->search . '%');
@@ -128,9 +117,9 @@ class Index extends Component
             'fields'        => Field::all(),
             'categories'    => Category::all(),
             'documentTypes' => DocumentType::all(),
-            'departments'   => $departments,
-            'sections'      => Section::when($this->department_id, fn($q) => $q->where('department_id', $this->department_id))->get(),
-            'employees'     => $employees,
+            'departments'   => Department::all(),           // Semua department
+            'sections'      => Section::all(),              // Semua section
+            'employees'     => Employee::with('user')->get(), // Semua employee
             'actionFrequencyUnits' => ActionFrequencyUnit::all(),
             'racks'         => Rack::all(),
         ]);

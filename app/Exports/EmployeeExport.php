@@ -13,33 +13,36 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class EmployeeExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
-        return Employee::with(['department', 'section', 'position'])->get();
+        // Tambahkan relasi 'user.roles' agar query-nya efisien dan gak N+1 problem
+        return Employee::with(['department', 'section', 'position', 'user.roles'])->get();
     }
 
     /**
-    * Menentukan Header Kolom di Excel
-    */
+     * Menentukan Header Kolom di Excel
+     */
     public function headings(): array
     {
         return [
-            'NIK',
-            'Name',
-            'Gender',
-            'Phone',
-            'Department',
-            'Section',
-            'Position',
-            'Created At',
+            'nik',           // Disamakan lowercase biar kalau HRD mau re-import
+            'name',          // file hasil download ini, format headernya udah pas
+            'gender',
+            'phone',
+            'department',
+            'section',
+            'position',
+            'email',         // Tambahan: Kolom Email Akun
+            'role',          // Tambahan: Kolom Hak Akses
+            'created_at',
         ];
     }
 
     /**
-    * Mapping data per baris
-    */
+     * Mapping data per baris
+     */
     public function map($employee): array
     {
         return [
@@ -47,16 +50,20 @@ class EmployeeExport implements FromCollection, WithHeadings, WithMapping, WithS
             $employee->name,
             $employee->gender,
             $employee->phone,
-            $employee->department->name ?? '-', 
-            $employee->section->name ?? '-',    
-            $employee->position->name ?? '-',   
-            $employee->created_at->format('d-m-Y'),
+            $employee->department->name ?? '',
+            $employee->section->name ?? '',
+            $employee->position->name ?? '',
+            // Cek apakah punya user, kalau ada tampilkan email, kalau gak kosongkan  
+            $employee->user->email ?? '',
+            // Cek apakah punya user dan role, ambil nama role pertamanya
+            $employee->user ? ($employee->user->roles->first()->name ?? '') : '',
+            $employee->created_at->format('Y-m-d'), // Format standar database
         ];
     }
 
     /**
-    * Styling Header 
-    */
+     * Styling Header 
+     */
     public function styles(Worksheet $sheet)
     {
         return [

@@ -9,17 +9,21 @@ use App\Models\Employee;
 use App\Models\Department;
 use App\Models\Section;
 use App\Models\Position;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Livewire\WithPagination;
 use Illuminate\Validation\Rule;
 use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class Index extends Component
 {
     use WithPagination;
     use WithFileUploads;
 
-    // Form fields
+    // Form fields Employee
     public $employeeId;
     public $nik;
     public $name;
@@ -29,10 +33,17 @@ class Index extends Component
     public $section_id;
     public $position_id;
 
+    // Form fields User Account
+    public $userId = null;
+    public $email;
+    public $password;
+    public $role_name;
+
     // Data lists for dropdowns
     public $departments = [];
     public $sections = [];
     public $positions = [];
+    public $roles = [];
 
     // Modal state
     public $isOpen = false;
@@ -46,46 +57,31 @@ class Index extends Component
     public $employeeIdToDelete = null;
     public $employeeNameToDelete = '';
 
-    // Property baru buat file import
+    // Property buat file import
     public $fileImport;
     public $isImportModalOpen = false;
 
-    /**
-     * Mount: Load initial data for dropdowns (Departments & Positions)
-     */
     public function mount()
     {
         $this->departments = Department::orderBy('name')->get();
         $this->positions = Position::orderBy('name')->get();
+        $this->roles = Role::orderBy('name')->get(); // Load data roles dari Spatie
     }
 
-    /**
-     * Updated Hook: When Department changes, filter Sections.
-     * Pastikan Model Section punya kolom 'department_id' jika ingin filtering.
-     * Jika tidak ada hubungan, baris filtering bisa dihapus.
-     */
     public function updatedDepartmentId($value)
     {
         if ($value) {
-            // Asumsi: Section memiliki relation atau foreign key ke Department
-            // Jika di tabel sections ada 'department_id', gunakan ini:
             $this->sections = Section::where('department_id', $value)->orderBy('name')->get();
-
-            // Jika tidak ada relasi langsung, load semua section:
-            // $this->sections = Section::orderBy('name')->get();
         } else {
             $this->sections = [];
         }
-        // Reset section selection
         $this->section_id = null;
     }
 
-    /**
-     * Validation Rules
-     */
     protected function rules()
     {
         return [
+            // Rules Employee
             'nik' => [
                 'required',
                 'string',
@@ -98,15 +94,32 @@ class Index extends Component
             'department_id' => ['nullable', 'exists:departments,id'],
             'section_id' => ['nullable', 'exists:sections,id'],
             'position_id' => ['nullable', 'exists:positions,id'],
+
+            // Rules User Account (Dinilai dari input Email)
+            'email' => [
+                'nullable',
+                'email',
+                Rule::unique('users', 'email')->ignore($this->userId)
+            ],
+            // Role wajib diisi KALAU email diisi
+            'role_name' => [
+                Rule::requiredIf(fn() => !empty($this->email)),
+                'nullable',
+                'exists:roles,name'
+            ],
+            // Password wajib KALAU email diisi DAN ini akun baru
+            'password' => [
+                Rule::requiredIf(fn() => !empty($this->email) && empty($this->userId)),
+                'nullable',
+                'min:6'
+            ],
         ];
     }
 
-    /**
-     * Render the component
-     */
     public function render()
     {
-        $employees = Employee::with(['department', 'section', 'position'])
+        // Load data employee sekaligus relasi usernya untuk indikator
+        $employees = Employee::with(['department', 'section', 'position', 'user'])
             ->where(function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('nik', 'like', '%' . $this->search . '%');
@@ -119,34 +132,36 @@ class Index extends Component
         ]);
     }
 
-    /**
-     * Open Modal (Create/Edit)
-     */
     public function openModal()
     {
         $this->resetErrorBag();
         $this->isOpen = true;
     }
 
-    /**
-     * Close Modal
-     */
     public function closeModal()
     {
         $this->isOpen = false;
         $this->resetForm();
     }
 
-    /**
-     * Reset Form Fields
-     */
     public function resetForm()
     {
-        $this->reset(['employeeId', 'nik', 'name', 'gender', 'phone', 'department_id', 'section_id', 'position_id']);
-        $this->sections = []; // Clear dynamic sections
+        $this->reset([
+            'employeeId',
+            'nik',
+            'name',
+            'gender',
+            'phone',
+            'department_id',
+            'section_id',
+            'position_id',
+            'userId',
+            'email',
+            'password',
+            'role_name'
+        ]);
+        $this->sections = [];
     }
-
-    // --- CRUD Logic ---
 
     public function create()
     {
@@ -157,7 +172,7 @@ class Index extends Component
     public function edit($id)
     {
         try {
-            $employee = Employee::findOrFail($id);
+            $employee = Employee::with('user')->findOrFail($id);
 
             $this->employeeId = $id;
             $this->nik = $employee->nik;
@@ -167,9 +182,15 @@ class Index extends Component
             $this->department_id = $employee->department_id;
             $this->position_id = $employee->position_id;
 
-            // Load sections for the selected department
             $this->updatedDepartmentId($this->department_id);
             $this->section_id = $employee->section_id;
+
+            // Jika punya akun user, isi juga form akunnya
+            if ($employee->user) {
+                $this->userId = $employee->user->id;
+                $this->email = $employee->user->email;
+                $this->role_name = $employee->user->roles->first()?->name;
+            }
 
             $this->openModal();
         } catch (\Exception $e) {
@@ -179,15 +200,57 @@ class Index extends Component
 
     public function save()
     {
-        $data = $this->validate();
+        $this->validate();
 
+        DB::beginTransaction();
         try {
-            Employee::updateOrCreate(['id' => $this->employeeId], $data);
+            $employee = Employee::updateOrCreate(
+                ['id' => $this->employeeId],
+                [
+                    'nik' => $this->nik,
+                    'name' => $this->name,
+                    'gender' => $this->gender,
+                    'phone' => $this->phone,
+                    'department_id' => $this->department_id,
+                    'section_id' => $this->section_id,
+                    'position_id' => $this->position_id,
+                ]
+            );
+
+            // Cek apakah HRD berniat bikin/update akun (dilihat dari field email)
+            if (!empty($this->email)) {
+                $userData = [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'employee_id' => $employee->id,
+                ];
+
+                if (!empty($this->password)) {
+                    $userData['password'] = Hash::make($this->password);
+                }
+
+                $user = User::updateOrCreate(
+                    ['id' => $this->userId],
+                    $userData
+                );
+
+                if ($this->role_name) {
+                    $user->syncRoles([$this->role_name]);
+                }
+            }
+            // Jika email dikosongkan (dihapus manual) saat edit, artinya akses dicabut
+            elseif ($this->userId) {
+                User::find($this->userId)?->delete();
+                $this->userId = null;
+            }
+
+            DB::commit();
 
             $message = $this->employeeId ? 'Employee updated successfully.' : 'Employee created successfully.';
             $this->dispatch('show-toast', message: $message, type: 'success');
             $this->closeModal();
         } catch (\Exception $e) {
+            DB::rollBack();
             $this->dispatch('show-toast', message: 'Error: ' . $e->getMessage(), type: 'error');
         }
     }
