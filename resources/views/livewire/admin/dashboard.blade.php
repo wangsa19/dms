@@ -2,7 +2,7 @@
     <div class="text-sm text-gray-500 mb-4">Dashboards > {{ $role === 'Admin' ? 'Document Analytics' : 'Department
         Overview' }}</div>
     <h1 class="text-3xl font-bold text-gray-800 mb-6">
-        {{ $role === 'Admin' ? 'DOCUMENT ANALYTICS' : 'MY DEPARTMENT DASHBOARD' }}
+        {{ $role === 'Admin' ? 'DOCUMENT ANALYTICS' : 'DOCUMENT DASHBOARD' }}
     </h1>
 
     @if($role === 'Admin')
