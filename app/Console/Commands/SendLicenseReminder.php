@@ -37,13 +37,23 @@ class SendLicenseReminder extends Command
         $licenses = \App\Models\License::where('reminder_date', $today)->get();
 
         foreach ($licenses as $license) {
+            $user = $license->owner->user ?? null;
+
+            // Buat in-app notification (Pastikan user_id menggunakan ID User, bukan Employee ID)
             \App\Models\Notification::create([
                 'license_id' => $license->id,
-                'user_id'    => $license->owner_id,
+                'user_id'    => $user ? $user->id : $license->owner_id, // Fallback to owner_id if no user found, though it might be wrong if they differ
                 'message'    => "License {$license->name_id} akan kedaluwarsa pada {$license->end_date}.",
                 'status'     => 'unread',
             ]);
-            $this->line("Notifikasi dibuat untuk: " . $license->name_id);
+
+            // Kirim email notification jika user punya akun email
+            if ($user && $user->email) {
+                $user->notify(new \App\Notifications\LicenseReminderNotification($license));
+                $this->line("Notifikasi email dikirim untuk: " . $license->name_id . " ke " . $user->email);
+            }
+
+            $this->line("Notifikasi in-app dibuat untuk: " . $license->name_id);
         }
     }
 }
