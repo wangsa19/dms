@@ -47,32 +47,34 @@ class UserSeeder extends Seeder
 
 
         // ==========================================
-        // 2. 8 USER UNTUK 8 DEPARTEMEN
+        // 2. 3 USER UNTUK MASING-MASING 8 DEPARTEMEN (SSPV, SPV, JSPV)
         // ==========================================
         
-        // USER PGA
-        $this->createUser('PGA', 'HR', 'SSPV', 'sspv_pga@example.com', 'Senior SPV PGA', $seniorSpvRole);
+        $departments = [
+            ['dept' => 'PGA', 'sec' => 'HR'],
+            ['dept' => 'PPIC', 'sec' => 'PPC'],
+            ['dept' => 'QA', 'sec' => 'QA ENG'],
+            ['dept' => 'ENG', 'sec' => 'PE'],
+            ['dept' => 'MTC', 'sec' => 'MTC'],
+            ['dept' => 'FATP', 'sec' => 'FA'],
+            ['dept' => 'PRODUKSI', 'sec' => 'PROD'],
+            ['dept' => 'NYS', 'sec' => 'NYS'],
+        ];
 
-        // USER PPIC
-        $this->createUser('PPIC', 'PPC', 'SSPV', 'sspv_ppic@example.com', 'Senior SPV PPIC', $seniorSpvRole);
+        foreach ($departments as $d) {
+            $deptCode = $d['dept'];
+            $secCode = $d['sec'];
+            $deptLower = strtolower($deptCode);
 
-        // USER QA
-        $this->createUser('QA', 'QA ENG', 'SPV', 'spv_qa@example.com', 'Supervisor QA', $spvRole);
-
-        // USER ENG
-        $this->createUser('ENG', 'PE', 'JSPV', 'jspv_eng@example.com', 'Junior SPV ENG', $juniorSpvRole);
-
-        // USER MTC
-        $this->createUser('MTC', 'MTC', 'SPV', 'spv_mtc@example.com', 'Supervisor MTC', $spvRole);
-
-        // USER FATP
-        $this->createUser('FATP', 'FA', 'SSPV', 'sspv_fatp@example.com', 'Senior SPV FATP', $seniorSpvRole);
-
-        // USER PRODUKSI
-        $this->createUser('PRODUKSI', 'PROD', 'SPV', 'spv_produksi@example.com', 'Supervisor Produksi', $spvRole);
-
-        // USER NYS
-        $this->createUser('NYS', 'NYS', 'JSPV', 'jspv_nys@example.com', 'Junior SPV NYS', $juniorSpvRole);
+            // USER SSPV
+            $this->createUser($deptCode, $secCode, 'SSPV', "sspv_{$deptLower}@example.com", "Senior SPV {$deptCode}", $seniorSpvRole);
+            
+            // USER SPV
+            $this->createUser($deptCode, $secCode, 'SPV', "spv_{$deptLower}@example.com", "Supervisor {$deptCode}", $spvRole);
+            
+            // USER JSPV
+            $this->createUser($deptCode, $secCode, 'JSPV', "jspv_{$deptLower}@example.com", "Junior SPV {$deptCode}", $juniorSpvRole);
+        }
     }
 
     private function createUser($deptCode, $sectionCode, $positionCode, $email, $name, $role)
@@ -81,8 +83,9 @@ class UserSeeder extends Seeder
         $section = Section::where('code', $sectionCode)->first();
         $position = Position::where('code', $positionCode)->first();
 
+        // Gunakan kombinasi position dan department untuk NIK agar unik
         $employee = Employee::firstOrCreate(
-            ['nik' => 'EMP_' . $deptCode],
+            ['nik' => 'EMP_' . $positionCode . '_' . $deptCode],
             [
                 'name' => $name,
                 'gender' => 'Laki-laki',
@@ -97,7 +100,7 @@ class UserSeeder extends Seeder
             ['email' => $email],
             [
                 'name' => $name,
-                'password' => Hash::make('password'),
+                'password' => \Illuminate\Support\Facades\Hash::make('password'),
                 'employee_id' => $employee->id,
             ]
         );

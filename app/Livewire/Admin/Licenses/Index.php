@@ -120,7 +120,7 @@ class Index extends Component
             'documentTypes' => DocumentType::all(),
             'departments'   => Department::all(),
             'sections'      => $this->department_id ? Section::where('department_id', $this->department_id)->get() : collect(),
-            'employees'     => $this->department_id ? Employee::with('user')->where('department_id', $this->department_id)->get() : collect(),
+            'employees'     => $this->department_id ? Employee::with('user')->has('user')->where('department_id', $this->department_id)->get() : collect(),
             'actionFrequencyUnits' => ActionFrequencyUnit::all(),
             'racks'         => Rack::all(),
         ]);
@@ -170,7 +170,7 @@ class Index extends Component
         $this->openModal();
 
         $user = auth()->user();
-        if (!$user->hasRole('super-admin')) {
+        if (!$user->hasRole('Admin')) {
             $this->department_id = $user->employee->department_id;
         }
     }

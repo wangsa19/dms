@@ -239,8 +239,8 @@
                         <div>
                             {{-- Label Disamakan dengan Documents --}}
                             <label class="text-sm font-medium text-gray-700">Department</label>
-                            <select wire:model.live="department_id"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
+                            <select wire:model.live="department_id" @disabled(!auth()->user()->hasRole('Admin'))
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400 disabled:opacity-60 disabled:bg-gray-100 dark:disabled:bg-gray-700">
                                 <option value="">Select Department...</option>
                                 @foreach($departments as $dept)
                                 <option value="{{ $dept->id }}">{{ $dept->name }}</option>
