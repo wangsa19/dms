@@ -217,7 +217,31 @@ class Index extends Component
 
         $data = $this->validate();
 
-        $data['reminder_date'] = Carbon::parse($data['end_date'])->subDays(30);
+        // 1. Set default reminder ke 30 hari sebelum end_date
+        $reminderDate = Carbon::parse($data['end_date'])->subDays(30);
+
+        // 2. Jika user mengisi action frequency, kita gunakan untuk membuat reminder lebih akurat
+        if (!empty($data['action_frequency_value']) && !empty($data['action_frequency_unit_id'])) {
+            $unit = \App\Models\ActionFrequencyUnit::find($data['action_frequency_unit_id']);
+            if ($unit) {
+                $endDate = Carbon::parse($data['end_date']);
+                $value = (int) $data['action_frequency_value'];
+                $unitName = strtolower($unit->name);
+                
+                // Sesuaikan unit yang mungkin ada di database (bisa bahasa Indonesia atau Inggris)
+                if (str_contains($unitName, 'year') || str_contains($unitName, 'tahun')) {
+                    $reminderDate = $endDate->subYears($value);
+                } elseif (str_contains($unitName, 'month') || str_contains($unitName, 'bulan')) {
+                    $reminderDate = $endDate->subMonths($value);
+                } elseif (str_contains($unitName, 'week') || str_contains($unitName, 'minggu')) {
+                    $reminderDate = $endDate->subWeeks($value);
+                } elseif (str_contains($unitName, 'day') || str_contains($unitName, 'hari')) {
+                    $reminderDate = $endDate->subDays($value);
+                }
+            }
+        }
+
+        $data['reminder_date'] = $reminderDate;
 
         // Pisahkan data file
         $fileData = $this->file;
