@@ -17,6 +17,7 @@ use App\Models\Rack;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
 
 class Index extends Component
 {
@@ -102,9 +103,9 @@ class Index extends Component
             'documentTypes' => DocumentType::all(),
             'categories'    => Category::all(),
             'fields'        => Field::all(),
-            'departments'   => Department::all(),           // Semua department
-            'sections'      => Section::all(),              // Semua section
-            'employees'     => Employee::with('user')->get(), // Semua employee
+            'departments'   => Department::all(),
+            'sections'      => $this->department_id ? Section::where('department_id', $this->department_id)->get() : collect(),
+            'employees'     => $this->department_id ? Employee::with('user')->where('department_id', $this->department_id)->get() : collect(),
             'racks'         => Rack::all(),
         ]);
     }
@@ -159,6 +160,7 @@ class Index extends Component
     {
         try {
             $document = Document::findOrFail($id);
+            Gate::authorize('update', $document);
 
             $this->documentId       = $id;
             $this->name_id          = $document->name_id;
@@ -181,8 +183,13 @@ class Index extends Component
 
     public function save()
     {
-        // Authorization check
-        abort_if(!auth()->user()->can('create documents'), 403, 'Anda tidak memiliki akses untuk menambah dokumen.');
+        if ($this->documentId) {
+            $document = Document::findOrFail($this->documentId);
+            Gate::authorize('update', $document);
+        } else {
+            Gate::authorize('create', Document::class);
+        }
+        
         $data = $this->validate();
 
         // Pisahkan data file dari data dokumen utama
@@ -240,6 +247,8 @@ class Index extends Component
                 $document = Document::with('versions')->find($this->documentIdToDelete);
 
                 if ($document) {
+                    Gate::authorize('delete', $document);
+                    
                     // 1. Hapus file fisiknya dari folder storage (biar storage nggak penuh)
                     foreach ($document->versions as $version) {
                         if ($version->file_path && Storage::disk('public')->exists($version->file_path)) {

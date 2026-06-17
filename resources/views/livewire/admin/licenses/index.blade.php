@@ -77,12 +77,12 @@
                                 <a wire:navigate href="{{ route('licenses.show', $lic->id) }}"
                                     class="text-emerald-600 hover:text-emerald-800 text-sm font-medium transition hover:underline">View</a>
 
-                                @can('edit licenses')
+                                @can('update', $lic)
                                 <button wire:click="edit({{ $lic->id }})"
                                     class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium transition hover:underline">Edit</button>
                                 @endcan
 
-                                @can('delete licenses')
+                                @can('delete', $lic)
                                 <button wire:click="confirmDelete({{ $lic->id }})"
                                     class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm font-medium transition hover:underline">Delete</button>
                                 @endcan

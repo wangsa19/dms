@@ -72,11 +72,11 @@
                             <td class="p-3 align-middle whitespace-nowrap flex gap-3">
                                 <a wire:navigate href="{{ route('documents.show', $doc->id) }}"
                                     class="text-emerald-600 hover:text-emerald-800 text-sm font-medium transition hover:underline">View</a>
-                                @can('edit documents')
+                                @can('update', $doc)
                                 <button wire:click="edit({{ $doc->id }})"
                                     class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium transition hover:underline">Edit</button>
                                 @endcan
-                                @can('delete documents')
+                                @can('delete', $doc)
                                 <button wire:click="confirmDelete({{ $doc->id }})"
                                     class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm font-medium transition hover:underline">Delete</button>
                                 @endcan

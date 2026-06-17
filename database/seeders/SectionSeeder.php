@@ -4,28 +4,34 @@ namespace Database\Seeders;
 
 use App\Models\Department;
 use App\Models\Section;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SectionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $deptIT = Department::where('code', 'IT')->first();
-        $deptHR = Department::where('code', 'HR')->first();
-        $deptFin = Department::where('code', 'FIN')->first();
+        $mapping = [
+            'PGA' => ['HR', 'IR', 'GA', 'UTILITY', 'QSA', 'PURCHASE'],
+            'PPIC' => ['PPC', 'MPC', 'EXIM', 'WHS'],
+            'QA' => ['QA ENG', 'QC MSA', 'QC CHECK W/H', 'QC REC', 'QC LAB', 'QC STD'],
+            'ENG' => ['PE', 'PD'],
+            'MTC' => ['MTC', 'DESIGN'],
+            'FATP' => ['FA'],
+            'PRODUKSI' => ['PROD', 'TRN', 'PP'],
+            'NYS' => ['NYS']
+        ];
 
-        // Section untuk IT
-        Section::firstOrCreate(['name' => 'Software Development', 'code' => 'DEV', 'department_id' => $deptIT->id]);
-        Section::firstOrCreate(['name' => 'Network & Infrastructure', 'code' => 'NET', 'department_id' => $deptIT->id]);
-
-        // Section untuk HR
-        Section::firstOrCreate(['name' => 'Recruitment & Training', 'code' => 'REC', 'department_id' => $deptHR->id]);
-
-        // Section untuk Finance
-        Section::firstOrCreate(['name' => 'Accounting', 'code' => 'ACC', 'department_id' => $deptFin->id]);
+        foreach ($mapping as $deptCode => $sections) {
+            $dept = Department::where('code', $deptCode)->first();
+            if ($dept) {
+                foreach ($sections as $sec) {
+                    Section::firstOrCreate([
+                        'name' => $sec,
+                        'code' => $sec,
+                        'department_id' => $dept->id
+                    ]);
+                }
+            }
+        }
     }
 }

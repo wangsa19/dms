@@ -19,6 +19,7 @@ use App\Models\Rack;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
 
 class Index extends Component
 {
@@ -117,9 +118,9 @@ class Index extends Component
             'fields'        => Field::all(),
             'categories'    => Category::all(),
             'documentTypes' => DocumentType::all(),
-            'departments'   => Department::all(),           // Semua department
-            'sections'      => Section::all(),              // Semua section
-            'employees'     => Employee::with('user')->get(), // Semua employee
+            'departments'   => Department::all(),
+            'sections'      => $this->department_id ? Section::where('department_id', $this->department_id)->get() : collect(),
+            'employees'     => $this->department_id ? Employee::with('user')->where('department_id', $this->department_id)->get() : collect(),
             'actionFrequencyUnits' => ActionFrequencyUnit::all(),
             'racks'         => Rack::all(),
         ]);
@@ -164,7 +165,7 @@ class Index extends Component
 
     public function create()
     {
-        abort_if(!auth()->user()->can('create licenses'), 403, 'Anda tidak memiliki akses untuk menambah lisensi.');
+        Gate::authorize('create', License::class);
 
         $this->openModal();
 
@@ -176,14 +177,9 @@ class Index extends Component
 
     public function edit($id)
     {
-        if ($this->licenseId) {
-            abort_if(!auth()->user()->can('edit licenses'), 403, 'Anda tidak memiliki akses untuk mengedit.');
-        } else {
-            abort_if(!auth()->user()->can('create licenses'), 403, 'Anda tidak memiliki akses untuk menambah data.');
-        }
-
         try {
             $license = License::findOrFail($id);
+            Gate::authorize('update', $license);
 
             $this->licenseId              = $id;
             $this->name_id                = $license->name_id;
@@ -212,6 +208,13 @@ class Index extends Component
 
     public function save()
     {
+        if ($this->licenseId) {
+            $license = License::findOrFail($this->licenseId);
+            Gate::authorize('update', $license);
+        } else {
+            Gate::authorize('create', License::class);
+        }
+
         $data = $this->validate();
 
         $data['reminder_date'] = Carbon::parse($data['end_date'])->subDays(30);
@@ -259,7 +262,8 @@ class Index extends Component
 
     public function confirmDelete($id)
     {
-        abort_if(!auth()->user()->can('delete licenses'), 403, 'Anda tidak memiliki akses untuk menghapus lisensi.');
+        $license = License::findOrFail($id);
+        Gate::authorize('delete', $license);
 
         $this->licenseIdToDelete = $id;
         $this->showDeleteModal = true;
@@ -267,13 +271,13 @@ class Index extends Component
 
     public function delete()
     {
-        abort_if(!auth()->user()->can('delete licenses'), 403, 'Anda tidak memiliki akses untuk menghapus lisensi.');
-
         if ($this->licenseIdToDelete) {
             try {
                 $license = License::with('versions')->find($this->licenseIdToDelete);
 
                 if ($license) {
+                    Gate::authorize('delete', $license);
+                    
                     foreach ($license->versions as $version) {
                         if ($version->file_path && Storage::disk('public')->exists($version->file_path)) {
                             Storage::disk('public')->delete($version->file_path);

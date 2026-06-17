@@ -8,125 +8,102 @@ use App\Models\Position;
 use Spatie\Permission\Models\Role;
 use App\Models\Section;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Ambil Role yang sudah diseed dari RoleSeeder
         $adminRole = Role::where('name', 'Admin')->first();
         $seniorSpvRole = Role::where('name', 'Senior Supervisor')->first();
         $spvRole = Role::where('name', 'Supervisor')->first();
-        $juniorSpvRole = Role::where('name', 'Junior Supervisor')->first(); // Ambil role baru
+        $juniorSpvRole = Role::where('name', 'Junior Supervisor')->first();
 
-        // ==============================
-        // 1. DATA ADMIN
-        // ==============================
-        $employee1 = Employee::firstOrCreate(
-            ['nik' => 'EMP001'],
+        // ==========================================
+        // 1. ADMIN UTAMA (Bebas Departemen/Seksi)
+        // ==========================================
+        $adminEmployee = Employee::firstOrCreate(
+            ['nik' => 'EMP_ADMIN'],
             [
                 'name' => 'Admin Utama',
                 'gender' => 'Laki-laki',
-                'phone' => '081234567801',
-                'position_id' => Position::where('code', 'ADM')->first()->id,
-                'section_id' => Section::where('code', 'DEV')->first()->id,
-                'department_id' => Department::where('code', 'IT')->first()->id,
+                'phone' => '081200000000',
+                'position_id' => null,
+                'section_id' => null,
+                'department_id' => null,
             ]
         );
 
-        $user1 = User::firstOrCreate(
+        $adminUser = User::firstOrCreate(
             ['email' => 'admin@example.com'],
             [
                 'name' => 'Admin Utama',
                 'password' => Hash::make('password'),
-                'employee_id' => $employee1->id,
+                'employee_id' => $adminEmployee->id,
             ]
         );
-        $user1->assignRole($adminRole);
+        if ($adminRole) $adminUser->assignRole($adminRole);
 
-        // ==============================
-        // 2. DATA SENIOR SUPERVISOR
-        // ==============================
-        $employee2 = Employee::firstOrCreate(
-            ['nik' => 'EMP002'],
-            [
-                'name' => 'Senior SPV HRD',
-                'gender' => 'Perempuan',
-                'phone' => '081234567802',
-                'position_id' => Position::where('code', 'MGR')->first()->id,
-                'section_id' => Section::where('code', 'REC')->first()->id,
-                'department_id' => Department::where('code', 'HR')->first()->id,
-            ]
-        );
 
-        $user2 = User::firstOrCreate(
-            ['email' => 'seniorspv@example.com'],
-            [
-                'name' => 'Senior SPV HRD',
-                'password' => Hash::make('password'),
-                'employee_id' => $employee2->id,
-            ]
-        );
-        $user2->assignRole($seniorSpvRole);
+        // ==========================================
+        // 2. 8 USER UNTUK 8 DEPARTEMEN
+        // ==========================================
+        
+        // USER PGA
+        $this->createUser('PGA', 'HR', 'SSPV', 'sspv_pga@example.com', 'Senior SPV PGA', $seniorSpvRole);
 
-        // ==============================
-        // 3. DATA SUPERVISOR
-        // ==============================
-        $employee3 = Employee::firstOrCreate(
-            ['nik' => 'EMP003'],
+        // USER PPIC
+        $this->createUser('PPIC', 'PPC', 'SSPV', 'sspv_ppic@example.com', 'Senior SPV PPIC', $seniorSpvRole);
+
+        // USER QA
+        $this->createUser('QA', 'QA ENG', 'SPV', 'spv_qa@example.com', 'Supervisor QA', $spvRole);
+
+        // USER ENG
+        $this->createUser('ENG', 'PE', 'JSPV', 'jspv_eng@example.com', 'Junior SPV ENG', $juniorSpvRole);
+
+        // USER MTC
+        $this->createUser('MTC', 'MTC', 'SPV', 'spv_mtc@example.com', 'Supervisor MTC', $spvRole);
+
+        // USER FATP
+        $this->createUser('FATP', 'FA', 'SSPV', 'sspv_fatp@example.com', 'Senior SPV FATP', $seniorSpvRole);
+
+        // USER PRODUKSI
+        $this->createUser('PRODUKSI', 'PROD', 'SPV', 'spv_produksi@example.com', 'Supervisor Produksi', $spvRole);
+
+        // USER NYS
+        $this->createUser('NYS', 'NYS', 'JSPV', 'jspv_nys@example.com', 'Junior SPV NYS', $juniorSpvRole);
+    }
+
+    private function createUser($deptCode, $sectionCode, $positionCode, $email, $name, $role)
+    {
+        $dept = Department::where('code', $deptCode)->first();
+        $section = Section::where('code', $sectionCode)->first();
+        $position = Position::where('code', $positionCode)->first();
+
+        $employee = Employee::firstOrCreate(
+            ['nik' => 'EMP_' . $deptCode],
             [
-                'name' => 'Supervisor IT',
+                'name' => $name,
                 'gender' => 'Laki-laki',
-                'phone' => '081234567803',
-                'position_id' => Position::where('code', 'STF')->first()->id,
-                'section_id' => Section::where('code', 'NET')->first()->id,
-                'department_id' => Department::where('code', 'IT')->first()->id,
+                'phone' => '0812' . rand(10000000, 99999999),
+                'position_id' => $position ? $position->id : 1,
+                'section_id' => $section ? $section->id : 1,
+                'department_id' => $dept ? $dept->id : 1,
             ]
         );
 
-        $user3 = User::firstOrCreate(
-            ['email' => 'spv@example.com'],
+        $user = User::firstOrCreate(
+            ['email' => $email],
             [
-                'name' => 'Supervisor IT',
+                'name' => $name,
                 'password' => Hash::make('password'),
-                'employee_id' => $employee3->id,
-            ]
-        );
-        $user3->assignRole($spvRole);
-
-        // ==============================
-        // 4. DATA JUNIOR SUPERVISOR (TAMBAHAN)
-        // ==============================
-        $employee4 = Employee::firstOrCreate(
-            ['nik' => 'EMP004'],
-            [
-                'name' => 'Junior SPV Prod',
-                'gender' => 'Laki-laki',
-                'phone' => '081234567804',
-                // Pastikan code di bawah ini sesuai dengan data master lo
-                'position_id' => Position::where('code', 'STF')->first()->id,
-                'section_id' => Section::where('code', 'NET')->first()->id,
-                'department_id' => Department::where('code', 'IT')->first()->id,
+                'employee_id' => $employee->id,
             ]
         );
 
-        $user4 = User::firstOrCreate(
-            ['email' => 'juniorspv@example.com'],
-            [
-                'name' => 'Junior SPV Prod',
-                'password' => Hash::make('password'),
-                'employee_id' => $employee4->id,
-            ]
-        );
-
-        if ($juniorSpvRole) {
-            $user4->assignRole($juniorSpvRole);
+        if ($role) {
+            $user->assignRole($role);
         }
     }
 }
