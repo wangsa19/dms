@@ -176,7 +176,7 @@
 
         <footer class="mt-auto pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-between text-sm text-gray-500 dark:text-gray-400 
             max-md:flex-col max-md:text-center max-md:gap-2">
-            <p>2025 © Jatim Autocomp Indonesia.</p>
+            <p>2026 Document Management System.</p>
             <p>Develop by Politeknik Elektronika Negeri Surabaya</p>
         </footer>
     </main>

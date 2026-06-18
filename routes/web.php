@@ -8,7 +8,7 @@ use App\Livewire\Admin\Licenses\Show as LicenseDetail;
 
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('welcome');
 });
 
 Route::get('/sign-in', App\Livewire\Auth\SignIn::class)->name('login');
