@@ -178,7 +178,7 @@
 
     <!-- Footer -->
     <footer class="relative z-10 w-full text-center py-6 border-t border-gray-200 dark:border-white/5 mt-auto">
-        <p class="text-sm text-gray-500 dark:text-gray-600 font-medium">&copy; {{ date('Y') }} Document Management System. All rights reserved.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-600 font-medium">&copy; 2025 Document Management System. Develop by Politeknik Elektronika Negeri Surabaya</p>
     </footer>
 
 </body>

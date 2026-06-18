@@ -30,6 +30,14 @@
     <div class="flex w-full lg:w-1/2 items-center justify-center p-6 sm:p-8 lg:p-12">
         <div class="w-full max-w-md">
 
+            {{-- Back to Home Button --}}
+            <div class="mb-6">
+                <a href="{{ url('/') }}" class="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200 group">
+                    <x-heroicon-o-arrow-left class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" />
+                    Kembali ke Beranda
+                </a>
+            </div>
+
             {{-- Card Container with Glass Effect --}}
             <div
                 class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-8 sm:p-10">
@@ -125,7 +133,7 @@
 
             {{-- Footer --}}
             <p class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-                © 2025 PT. Jatim Autocomp Indonesia. All rights reserved.
+                &copy; 2025 Document Management System. Develop by Politeknik Elektronika Negeri Surabaya
             </p>
         </div>
     </div>
