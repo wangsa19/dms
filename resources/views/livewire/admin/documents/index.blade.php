@@ -266,8 +266,11 @@
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3 bg-gray-50 rounded-b-xl">
                 <button type="button" wire:click="closeModal"
                     class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition">Cancel</button>
-                <button type="submit" form="documentForm"
-                    class="px-4 py-2 text-sm bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition shadow">Save</button>
+                <button type="submit" form="documentForm" wire:loading.attr="disabled" wire:target="save"
+                    class="px-4 py-2 text-sm bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition shadow disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span wire:loading.remove wire:target="save">Save</span>
+                    <span wire:loading wire:target="save">Saving...</span>
+                </button>
             </div>
         </div>
     </div>

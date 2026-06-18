@@ -66,18 +66,22 @@
                             </td>
 
                             {{-- IMPLEMENTASI @can UNTUK TOMBOL EDIT & DELETE --}}
-                            @if(auth()->user()->can('edit document outs') || auth()->user()->can('delete document
-                            outs'))
+                            @if(auth()->user()->can('edit document outs') || auth()->user()->can('delete document outs'))
                             <td class="p-3 align-middle whitespace-nowrap flex gap-2">
-                                @can('edit document outs')
-                                <button wire:click="edit({{ $docOut->id }})"
-                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium hover:underline">Edit</button>
-                                @endcan
+                                {{-- Hanya tampilkan tombol jika Admin ATAU user pembuat record --}}
+                                @if(auth()->user()->hasRole('Admin') || $docOut->created_by === auth()->id())
+                                    @can('edit document outs')
+                                    <button wire:click="edit({{ $docOut->id }})"
+                                        class="text-blue-600 hover:text-blue-800 text-sm font-medium hover:underline">Edit</button>
+                                    @endcan
 
-                                @can('delete document outs')
-                                <button wire:click="confirmDelete({{ $docOut->id }})"
-                                    class="text-red-600 hover:text-red-800 text-sm font-medium hover:underline">Delete</button>
-                                @endcan
+                                    @can('delete document outs')
+                                    <button wire:click="confirmDelete({{ $docOut->id }})"
+                                        class="text-red-600 hover:text-red-800 text-sm font-medium hover:underline">Delete</button>
+                                    @endcan
+                                @else
+                                    <span class="text-xs text-gray-400">-</span>
+                                @endif
                             </td>
                             @endif
                         </tr>
@@ -172,8 +176,11 @@
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3 bg-gray-50 rounded-b-xl">
                 <button type="button" wire:click="closeModal"
                     class="px-4 py-2 text-sm bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg transition">Cancel</button>
-                <button type="submit" form="documentOutForm"
-                    class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition shadow">Save</button>
+                <button type="submit" form="documentOutForm" wire:loading.attr="disabled" wire:target="save"
+                    class="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition shadow disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span wire:loading.remove wire:target="save">Save</span>
+                    <span wire:loading wire:target="save">Saving...</span>
+                </button>
             </div>
         </div>
     </div>

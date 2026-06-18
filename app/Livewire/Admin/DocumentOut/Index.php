@@ -42,8 +42,21 @@ class Index extends Component
 
     public function render()
     {
+        $user = auth()->user();
+        $isAdmin = $user->hasRole('Admin');
+        $deptId = $user->employee->department_id ?? null;
+
         // Query data document_outs dengan relasi document dan borrower (employee)
         $documentOuts = DocumentOut::with(['document.documentType', 'document.category', 'borrower'])
+            ->when(!$isAdmin && $deptId, function ($query) use ($deptId) {
+                // Hanya tampilkan pinjaman dokumen yang berasal dari departemen user,
+                // dan dipinjam oleh user dari departemen yang sama
+                $query->whereHas('document', function ($q) use ($deptId) {
+                    $q->where('department_id', $deptId);
+                })->whereHas('borrower', function ($q) use ($deptId) {
+                    $q->where('department_id', $deptId);
+                });
+            })
             ->when($this->search, function ($query) {
                 $query->whereHas('document', function ($q) {
                     $q->where('name_id', 'like', '%' . $this->search . '%')
@@ -56,10 +69,24 @@ class Index extends Component
             ->latest()
             ->paginate($this->perPage);
 
+        // Ambil ID dokumen yang sedang dipinjam (kecuali dokumen yang sedang diedit saat ini)
+        $currentlyBorrowedDocumentIds = \App\Models\DocumentOut::whereIn('status', ['Borrowed', 'Late'])
+            ->when($this->documentOutId, function ($q) {
+                $q->where('id', '!=', $this->documentOutId);
+            })
+            ->pluck('document_id');
+
         return view('livewire.admin.document-out.index', [
             'documentOuts' => $documentOuts,
-            'documents'    => Document::where('status', 'Active')->get(),
-            'employees'    => Employee::all(),
+            'documents'    => Document::where('status', 'Active')
+                                ->whereNotIn('id', $currentlyBorrowedDocumentIds)
+                                ->when(!$isAdmin && $deptId, function ($q) use ($deptId) {
+                                    $q->where('department_id', $deptId);
+                                })->get(),
+            'employees'    => Employee::with('user')->has('user')
+                                ->when(!$isAdmin && $deptId, function ($q) use ($deptId) {
+                                    $q->where('department_id', $deptId);
+                                })->get(),
         ]);
     }
 
@@ -101,6 +128,11 @@ class Index extends Component
 
         $docOut = DocumentOut::findOrFail($id);
 
+        // Hanya pembuat atau Admin yang bisa edit
+        if ($docOut->created_by !== auth()->id() && !auth()->user()->hasRole('Admin')) {
+            abort(403, 'Anda hanya dapat mengedit riwayat peminjaman yang Anda buat sendiri.');
+        }
+
         $this->documentOutId = $id;
         $this->document_id   = $docOut->document_id;
         $this->borrower_id   = $docOut->borrower_id;
@@ -116,11 +148,20 @@ class Index extends Component
     {
         if ($this->documentOutId) {
             abort_if(!auth()->user()->can('edit document outs'), 403, 'Anda tidak memiliki akses untuk mengedit.');
+            
+            $docOut = DocumentOut::findOrFail($this->documentOutId);
+            if ($docOut->created_by !== auth()->id() && !auth()->user()->hasRole('Admin')) {
+                abort(403, 'Anda hanya dapat mengedit riwayat peminjaman yang Anda buat sendiri.');
+            }
         } else {
             abort_if(!auth()->user()->can('create document outs'), 403, 'Anda tidak memiliki akses untuk menambah data.');
         }
 
         $data = $this->validate();
+
+        if (!$this->documentOutId) {
+            $data['created_by'] = auth()->id();
+        }
 
         try {
             DocumentOut::updateOrCreate(['id' => $this->documentOutId], $data);
@@ -137,6 +178,11 @@ class Index extends Component
     {
         abort_if(!auth()->user()->can('delete document outs'), 403, 'Anda tidak memiliki akses untuk menghapus data peminjaman.');
 
+        $docOut = DocumentOut::findOrFail($id);
+        if ($docOut->created_by !== auth()->id() && !auth()->user()->hasRole('Admin')) {
+            abort(403, 'Anda hanya dapat menghapus riwayat peminjaman yang Anda buat sendiri.');
+        }
+
         $this->documentOutIdToDelete = $id;
         $this->showDeleteModal = true;
     }
@@ -147,7 +193,12 @@ class Index extends Component
         
         if ($this->documentOutIdToDelete) {
             try {
-                DocumentOut::findOrFail($this->documentOutIdToDelete)->delete();
+                $docOut = DocumentOut::findOrFail($this->documentOutIdToDelete);
+                if ($docOut->created_by !== auth()->id() && !auth()->user()->hasRole('Admin')) {
+                    abort(403, 'Anda hanya dapat menghapus riwayat peminjaman yang Anda buat sendiri.');
+                }
+                
+                $docOut->delete();
                 $this->dispatch('show-toast', message: 'Document Out deleted successfully.', type: 'success');
             } catch (\Exception $e) {
                 $this->dispatch('show-toast', message: 'Error: ' . $e->getMessage(), type: 'error');
