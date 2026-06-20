@@ -1,13 +1,13 @@
 <div>
     <div class="text-sm text-gray-500 mb-4">
-        <a href="/admin/licenses" class="hover:underline">Manage</a> >
-        <a href="/admin/licenses" class="hover:underline">Licenses</a> >
+        <a href="/dashboard" class="hover:underline">Dashboard</a> >
+        <a href="/licenses" class="hover:underline">Licenses</a> >
         Detail
     </div>
 
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">LICENSE DETAIL</h1>
-        <a wire:navigate href="/admin/licenses"
+        <a wire:navigate href="/licenses"
             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg text-sm font-medium transition">
             &larr; Back to List
         </a>

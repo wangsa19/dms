@@ -11,7 +11,7 @@ class Show extends Component
 {
     public $license;
 
-    public function mount($id)
+    public function mount($license)
     {
         $this->license = License::with([
             'documentType',
@@ -25,7 +25,7 @@ class Show extends Component
             'versions' => function ($query) {
                 $query->orderBy('version_number', 'desc');
             }
-        ])->findOrFail($id);
+        ])->findOrFail($license);
     }
 
     public function downloadVersion($versionId)

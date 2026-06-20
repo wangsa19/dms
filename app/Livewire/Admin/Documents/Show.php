@@ -11,7 +11,7 @@ class Show extends Component
 {
     public $document;
 
-    public function mount($id)
+    public function mount($document)
     {
         $this->document = Document::with([
             'documentType',
@@ -24,7 +24,7 @@ class Show extends Component
             'versions' => function ($query) {
                 $query->with('uploader')->orderBy('version_number', 'desc');
             }
-        ])->findOrFail($id);
+        ])->findOrFail($document);
     }   
 
     public function downloadVersion($versionId)

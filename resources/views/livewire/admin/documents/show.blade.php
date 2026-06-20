@@ -1,14 +1,14 @@
 <div>
     {{-- Breadcrumbs --}}
     <div class="text-sm text-gray-500 mb-4">
-        <a href="/admin/documents" class="hover:underline">Manage</a> >
-        <a href="/admin/documents" class="hover:underline">Documents</a> >
+        <a href="/dashboard" class="hover:underline">Dashboard</a> >
+        <a href="/documents" class="hover:underline">Documents</a> >
         Detail
     </div>
 
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">DOCUMENT DETAIL</h1>
-        <a wire:navigate href="/admin/documents"
+        <a wire:navigate href="/documents"
             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg text-sm font-medium transition">
             &larr; Back to List
         </a>
