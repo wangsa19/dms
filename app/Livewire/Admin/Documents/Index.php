@@ -105,7 +105,9 @@ class Index extends Component
             'fields'        => Field::all(),
             'departments'   => Department::all(),
             'sections'      => $this->department_id ? Section::where('department_id', $this->department_id)->get() : collect(),
-            'employees'     => $this->department_id ? Employee::with('user')->has('user')->where('department_id', $this->department_id)->get() : collect(),
+            'employees'     => $this->department_id ? Employee::whereHas('user.roles', function ($query) {
+                $query->whereIn('name', ['Senior Supervisor', 'Supervisor', 'Admin']);
+            })->where('department_id', $this->department_id)->get() : collect(),
             'racks'         => Rack::all(),
         ]);
     }

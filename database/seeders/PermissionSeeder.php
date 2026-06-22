@@ -128,15 +128,25 @@ class PermissionSeeder extends Seeder
         $supervisorRoles = [
             'Senior Supervisor',
             'Supervisor',
-            'Junior Supervisor'
         ];
 
         foreach ($supervisorRoles as $roleName) {
             $role = Role::where('name', $roleName)->first();
             if ($role) {
-                // Semua level Spv mendapatkan akses penuh ke Document, Document Out, dan License
+                // Senior Supervisor dan Supervisor mendapatkan akses penuh ke Document, Document Out, dan License
                 $role->syncPermissions($transactionPermissions);
             }
+        }
+
+        // --- SETUP JUNIOR SUPERVISOR (VIEW ONLY) ---
+        $juniorRole = Role::where('name', 'Junior Supervisor')->first();
+        if ($juniorRole) {
+            $juniorRole->syncPermissions([
+                'access dashboard',
+                'view documents',
+                'view document outs',
+                'view licenses',
+            ]);
         }
     }
 }
