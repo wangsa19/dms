@@ -102,20 +102,28 @@ class Dashboard extends Component
 
         if ($deptId) {
             // Hitung Total Dokumen Departemen
-            $this->totalDocs = \App\Models\Document::where('department_id', $deptId)->count();
+            // $this->totalDocs = \App\Models\Document::where('department_id', $deptId)->count();
+            $this->totalDocs = \App\Models\Document::count();
 
             // Hitung Total Lisensi Departemen (Tambahan baru untuk card terpisah)
-            $this->totalLicenses = \App\Models\License::where('department_id', $deptId)->count();
+            // $this->totalLicenses = \App\Models\License::where('department_id', $deptId)->count();
+            $this->totalLicenses = \App\Models\License::count();
 
             // Ambil list dokumen terbaru
-            $this->latestDocs = \App\Models\Document::where('department_id', $deptId)
-                ->latest()
+            // $this->latestDocs = \App\Models\Document::where('department_id', $deptId)
+            //     ->latest()
+            //     ->take(5)
+            //     ->get();
+            $this->latestDocs = \App\Models\Document::latest()
                 ->take(5)
                 ->get();
 
             // Reminder Lisensi yang akan expired
-            $this->expiringLicenses = \App\Models\License::where('department_id', $deptId)
-                ->whereDate('end_date', '<=', \Carbon\Carbon::now()->addDays(30))
+            // $this->expiringLicenses = \App\Models\License::where('department_id', $deptId)
+            //     ->whereDate('end_date', '<=', \Carbon\Carbon::now()->addDays(30))
+            //     ->take(5)
+            //     ->get();
+            $this->expiringLicenses = \App\Models\License::whereDate('end_date', '<=', \Carbon\Carbon::now()->addDays(30))
                 ->take(5)
                 ->get();
         } else {
