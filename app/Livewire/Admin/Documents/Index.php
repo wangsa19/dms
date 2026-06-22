@@ -201,8 +201,13 @@ class Index extends Component
         unset($data['file'], $data['revision_notes']);
 
         try {
-            DB::transaction(function () use ($data, $fileData, $revisionNotes) {
+            DB::transaction(function () use ($data, $fileData, $revisionNotes, $isUpdate) {
                 $document = Document::updateOrCreate(['id' => $this->documentId], $data);
+
+                // Jika update, kita abaikan fileData (upload versi baru ada di halaman Show)
+                if ($isUpdate) {
+                    return;
+                }
 
                 if (!$fileData) {
                     return;

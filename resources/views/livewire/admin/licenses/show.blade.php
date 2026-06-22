@@ -112,7 +112,36 @@
 
         <div class="lg:col-span-2">
             <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-                <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">Version History & Files</h3>
+                <div class="flex justify-between items-center border-b pb-3 mb-4">
+                    <h3 class="text-lg font-bold text-gray-800">Version History & Files</h3>
+                </div>
+
+                @can('update', $license)
+                <div class="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-4 dark:bg-gray-800/50 dark:border-gray-700">
+                    <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">Upload New Version</h4>
+                    <form wire:submit.prevent="uploadVersion" class="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+                        <div class="flex-grow w-full">
+                            <label class="text-xs font-medium text-gray-600 block mb-1">Select File</label>
+                            <input wire:model="newFile" type="file" class="w-full text-sm border border-gray-300 rounded bg-white py-1.5 px-2 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                            @error('newFile') <span class="text-xs text-red-600">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="flex-grow w-full">
+                            <label class="text-xs font-medium text-gray-600 block mb-1">Revision Notes (Optional)</label>
+                            <input wire:model="newRevisionNotes" type="text" placeholder="e.g. Updated license document" class="w-full text-sm border border-gray-300 rounded bg-white py-1.5 px-3 focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500">
+                            @error('newRevisionNotes') <span class="text-xs text-red-600">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="shrink-0 w-full sm:w-auto">
+                            <button type="submit" wire:loading.attr="disabled" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-4 rounded shadow transition disabled:opacity-50">
+                                <span wire:loading.remove wire:target="uploadVersion">Upload</span>
+                                <span wire:loading wire:target="uploadVersion">Uploading...</span>
+                            </button>
+                        </div>
+                    </form>
+                    <div wire:loading wire:target="newFile" class="text-xs text-blue-600 mt-2 font-medium">
+                        Uploading file to server... please wait.
+                    </div>
+                </div>
+                @endcan
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">

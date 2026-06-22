@@ -344,9 +344,10 @@
                             @error('rack_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
+                        @if(!$licenseId)
                         {{-- File Upload & Versioning --}}
                         <div class="col-span-2 border-t pt-4 mt-2">
-                            <h4 class="text-sm font-bold text-gray-800 mb-4">Upload File & Versioning</h4>
+                            <h4 class="text-sm font-bold text-gray-800 mb-4">Upload File (First Version)</h4>
                         </div>
 
                         <div>
@@ -366,10 +367,15 @@
                         <div>
                             <label class="text-sm font-medium text-gray-700">Catatan Revisi (Opsional)</label>
                             <input wire:model="revision_notes" type="text"
-                                placeholder="Misal: Update dokumen tahun 2024"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
+                                placeholder="Misal: Lisensi asli"
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400 placeholder-gray-400 dark:placeholder-gray-500">
                             @error('revision_notes') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
+                        @else
+                        <div class="col-span-2 border-t pt-4 mt-2">
+                            <p class="text-sm text-gray-500 italic">Untuk mengunggah versi baru dari lisensi ini, silakan buka halaman <span class="font-semibold text-blue-600">View (Detail)</span>.</p>
+                        </div>
+                        @endif
 
                     </div>
                 </form>
