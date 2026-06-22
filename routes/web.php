@@ -23,6 +23,7 @@ Route::post('/logout', function (Request $request) {
 Route::middleware('is.login')->group(function () {
     // Dashboard dan halaman umum tanpa prefix admin
     Route::get('/dashboard', App\Livewire\Admin\Dashboard::class)->name('dashboard');
+    Route::get('/profile', App\Livewire\Admin\Profile\Index::class)->name('profile');
     Route::get('/document-out', App\Livewire\Admin\DocumentOut\Index::class)->name('document-out');
     Route::get('/notifications', \App\Livewire\Admin\Notifications\Index::class)->name('admin.notifications.index');
 

@@ -46,6 +46,7 @@ class DummyDataUserSeeder extends Seeder
             $employee = Employee::inRandomOrder()->first() ?? Employee::first();
             $user = User::inRandomOrder()->first() ?? User::first();
             $actionUnit = \App\Models\ActionFrequencyUnit::inRandomOrder()->first();
+            $rack = \App\Models\Rack::inRandomOrder()->first();
 
             // Check if required dependencies exist
             if (!$docType || !$category || !$field || !$department || !$section || !$employee || !$user) {
@@ -63,6 +64,7 @@ class DummyDataUserSeeder extends Seeder
                 'department_id' => $department->id,
                 'section_id' => $section->id,
                 'owner_id' => $employee->id,
+                'rack_id' => $rack ? $rack->id : null,
                 'status' => $i % 2 == 0 ? 'Inactive' : 'Active',
                 'current_version' => 1,
             ]);
@@ -92,6 +94,7 @@ class DummyDataUserSeeder extends Seeder
                 'department_id' => $department->id,
                 'section_id' => $section->id,
                 'owner_id' => $employee->id,
+                'rack_id' => $rack ? $rack->id : null,
                 'status' => $i % 2 == 0 ? 'Inactive' : 'Active',
                 'start_date' => Carbon::now()->subMonths(rand(1, 12)),
                 'end_date' => Carbon::now()->addYears(rand(1, 5))->addMonths(rand(1, 11)),

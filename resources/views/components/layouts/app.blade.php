@@ -150,14 +150,14 @@
                         class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-300 py-1 z-50 origin-top-right"
                         style="display: none;">
 
-                        {{-- Profile Link (Optional) --}}
-                        {{-- <a href="#"
+                        {{-- Profile Link --}}
+                        <a wire:navigate href="{{ route('profile') }}"
                             class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                             Profile
-                        </a> --}}
+                        </a>
 
                         {{-- Divider --}}
-                        {{-- <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div> --}}
+                        <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div>
 
                         {{-- Logout Button --}}
                         <form method="POST" action="{{ route('logout') }}">
