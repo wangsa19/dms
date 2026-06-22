@@ -42,7 +42,8 @@
                 </div>
             </div>
 
-            {{-- Table Container --}}
+            {{-- Admin Table View --}}
+            @if(auth()->user()->hasRole('Admin'))
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead class="bg-gray-50 text-gray-600">
@@ -90,6 +91,58 @@
                     </tbody>
                 </table>
             </div>
+            @else
+            {{-- Non-Admin Card Grid View --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse ($documents as $doc)
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col h-full dark:bg-gray-800 dark:border-gray-700">
+                    <div class="p-5 flex-grow">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 leading-tight">{{ $doc->name_id }}</h3>
+                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full shrink-0 ml-2 {{ $doc->status == 'Active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300' }}">
+                                {{ $doc->status }}
+                            </span>
+                        </div>
+                        
+                        @if($doc->name_jp)
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ $doc->name_jp }}</p>
+                        @endif
+
+                        <div class="space-y-2 mt-4">
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                <span class="font-medium text-gray-800 dark:text-gray-200 mr-1">Type:</span> {{ $doc->documentType->name ?? '-' }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                <span class="font-medium text-gray-800 dark:text-gray-200 mr-1">Dept:</span> {{ $doc->department->name ?? '-' }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50 rounded-b-xl flex gap-3 justify-end items-center">
+                        <a wire:navigate href="{{ route('documents.show', $doc->id) }}"
+                            class="text-emerald-600 hover:text-emerald-800 text-sm font-semibold transition hover:underline">View</a>
+                        
+                        @can('update', $doc)
+                        <button wire:click="edit({{ $doc->id }})"
+                            class="text-blue-600 hover:text-blue-800 text-sm font-semibold transition hover:underline">Edit</button>
+                        @endcan
+                        
+                        @can('delete', $doc)
+                        <button wire:click="confirmDelete({{ $doc->id }})"
+                            class="text-red-600 hover:text-red-800 text-sm font-semibold transition hover:underline">Delete</button>
+                        @endcan
+                    </div>
+                </div>
+                @empty
+                <div class="col-span-full py-12 text-center text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <p>No documents found.</p>
+                </div>
+                @endforelse
+            </div>
+            @endif
 
             <div class="mt-4">
                 {{ $documents->links() }}

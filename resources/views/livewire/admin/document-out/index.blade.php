@@ -26,7 +26,8 @@
             <div class="flex justify-between items-center mb-4 flex-wrap gap-y-4">
             </div>
 
-            {{-- Table Container --}}
+            {{-- Admin Table View --}}
+            @if(auth()->user()->hasRole('Admin'))
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead class="bg-gray-50 text-gray-600">
@@ -93,6 +94,61 @@
                     </tbody>
                 </table>
             </div>
+            @else
+            {{-- Non-Admin Card Grid View --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse ($documentOuts as $docOut)
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col h-full dark:bg-gray-800 dark:border-gray-700">
+                    <div class="p-5 flex-grow">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 leading-tight">{{ $docOut->document->name_id ?? '-' }}</h3>
+                            <span class="px-2.5 py-1 text-xs font-semibold rounded-full shrink-0 ml-2 {{ $docOut->status == 'Returned' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' }}">
+                                {{ $docOut->status }}
+                            </span>
+                        </div>
+
+                        <div class="space-y-2 mt-4">
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                <span class="font-medium text-gray-800 dark:text-gray-200 mr-1">Borrower:</span> {{ $docOut->borrower->name ?? '-' }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span class="font-medium text-gray-800 dark:text-gray-200 mr-1">Checkout:</span> 
+                                {{ \Carbon\Carbon::parse($docOut->checkout_time)->format('Y-m-d H:i') }}
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="font-medium text-gray-800 dark:text-gray-200 mr-1">Return:</span> 
+                                {{ $docOut->return_time ? \Carbon\Carbon::parse($docOut->return_time)->format('Y-m-d H:i') : '-' }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @if(auth()->user()->can('edit document outs') || auth()->user()->can('delete document outs'))
+                    <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50 rounded-b-xl flex gap-3 justify-end items-center">
+                        @if($docOut->created_by === auth()->id())
+                            @can('edit document outs')
+                            <button wire:click="edit({{ $docOut->id }})"
+                                class="text-blue-600 hover:text-blue-800 text-sm font-semibold transition hover:underline">Edit</button>
+                            @endcan
+                            
+                            @can('delete document outs')
+                            <button wire:click="confirmDelete({{ $docOut->id }})"
+                                class="text-red-600 hover:text-red-800 text-sm font-semibold transition hover:underline">Delete</button>
+                            @endcan
+                        @endif
+                    </div>
+                    @endif
+                </div>
+                @empty
+                <div class="col-span-full py-12 text-center text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <p>No documents out found.</p>
+                </div>
+                @endforelse
+            </div>
+            @endif
 
             {{-- Table Pagination --}}
             <div class="mt-4">
