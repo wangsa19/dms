@@ -30,12 +30,12 @@ class DummyDataUserSeeder extends Seeder
         // 1. Create a minimal valid PDF content
         $pdfContent = "%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
 
-        // Write to storage/app/public/documents/testing.pdf and storage/app/public/licences/testing.pdf
+        // Write to storage/app/public/documents/testing.pdf and storage/app/public/licenses/testing.pdf
         Storage::disk('public')->makeDirectory('documents');
-        Storage::disk('public')->makeDirectory('licences');
+        Storage::disk('public')->makeDirectory('licenses');
         
         Storage::disk('public')->put('documents/testing.pdf', $pdfContent);
-        Storage::disk('public')->put('licences/testing.pdf', $pdfContent);
+        Storage::disk('public')->put('licenses/testing.pdf', $pdfContent);
 
         for ($i = 1; $i <= 3; $i++) {
             $docType = DocumentType::inRandomOrder()->first() ?? DocumentType::first();
@@ -112,7 +112,7 @@ class DummyDataUserSeeder extends Seeder
                     'license_id' => $license->id,
                     'version_number' => 1,
                     'file_name' => 'testing.pdf',
-                    'file_path' => 'licences/testing.pdf',
+                    'file_path' => 'licenses/testing.pdf',
                     'file_type' => 'application/pdf',
                     'file_size' => strlen($pdfContent),
                     'revision_notes' => 'Initial version ' . $i,

@@ -36,15 +36,14 @@ class UserSeeder extends Seeder
         );
 
         $adminUser = User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'admin@ptjai.com'],
             [
                 'name' => 'Admin Utama',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('password123'),
                 'employee_id' => $adminEmployee->id,
             ]
         );
         if ($adminRole) $adminUser->assignRole($adminRole);
-
 
         // ==========================================
         // 2. 3 USER UNTUK MASING-MASING 8 DEPARTEMEN (SSPV, SPV, JSPV)
@@ -67,13 +66,13 @@ class UserSeeder extends Seeder
             $deptLower = strtolower($deptCode);
 
             // USER SSPV
-            $this->createUser($deptCode, $secCode, 'SSPV', "sspv_{$deptLower}@example.com", "Senior SPV {$deptCode}", $seniorSpvRole);
+            $this->createUser($deptCode, $secCode, 'SSPV', "sspv_{$deptLower}@ptjai.com", "Senior SPV {$deptCode}", $seniorSpvRole);
             
             // USER SPV
-            $this->createUser($deptCode, $secCode, 'SPV', "spv_{$deptLower}@example.com", "Supervisor {$deptCode}", $spvRole);
+            $this->createUser($deptCode, $secCode, 'SPV', "spv_{$deptLower}@ptjai.com", "Supervisor {$deptCode}", $spvRole);
             
             // USER JSPV
-            $this->createUser($deptCode, $secCode, 'JSPV', "jspv_{$deptLower}@example.com", "Junior SPV {$deptCode}", $juniorSpvRole);
+            $this->createUser($deptCode, $secCode, 'JSPV', "jspv_{$deptLower}@ptjai.com", "Junior SPV {$deptCode}", $juniorSpvRole);
         }
     }
 
@@ -100,7 +99,7 @@ class UserSeeder extends Seeder
             ['email' => $email],
             [
                 'name' => $name,
-                'password' => \Illuminate\Support\Facades\Hash::make('password'),
+                'password' => \Illuminate\Support\Facades\Hash::make('password123'),
                 'employee_id' => $employee->id,
             ]
         );
