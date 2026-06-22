@@ -36,7 +36,6 @@ class Index extends Component
             'borrower_id'   => 'required|exists:employees,id',
             'checkout_time' => 'required|date',
             'return_time'   => 'nullable|date|after_or_equal:checkout_time',
-            'status'        => 'required|string|max:50',
         ];
     }
 
@@ -136,8 +135,8 @@ class Index extends Component
         $this->documentOutId = $id;
         $this->document_id   = $docOut->document_id;
         $this->borrower_id   = $docOut->borrower_id;
-        $this->checkout_time = $docOut->checkout_time;
-        $this->return_time   = $docOut->return_time;
+        $this->checkout_time = $docOut->checkout_time ? \Carbon\Carbon::parse($docOut->checkout_time)->format('Y-m-d\TH:i') : null;
+        $this->return_time   = $docOut->return_time ? \Carbon\Carbon::parse($docOut->return_time)->format('Y-m-d\TH:i') : null;
         $this->status        = $docOut->status;
 
         $this->resetErrorBag();
@@ -158,6 +157,9 @@ class Index extends Component
         }
 
         $data = $this->validate();
+
+        // Auto determine status
+        $data['status'] = !empty($data['return_time']) ? 'Returned' : 'Borrowed';
 
         if (!$this->documentOutId) {
             $data['created_by'] = auth()->id();

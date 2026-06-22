@@ -144,7 +144,7 @@
                         {{-- Checkout Time --}}
                         <div>
                             <label class="text-sm font-medium text-gray-700">Checkout Time</label>
-                            <input wire:model="checkout_time" type="datetime-local" step="1"
+                            <input wire:model="checkout_time" type="datetime-local"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
                             @error('checkout_time') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
@@ -152,22 +152,22 @@
                         {{-- Return Time --}}
                         <div>
                             <label class="text-sm font-medium text-gray-700">Return Time</label>
-                            <input wire:model="return_time" type="datetime-local" step="1"
+                            <input wire:model="return_time" type="datetime-local"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
                             @error('return_time') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
-                        {{-- Status --}}
-                        <div class="col-span-2">
+                        {{-- Status (Auto determined) --}}
+                        {{-- <div class="col-span-2">
                             <label class="text-sm font-medium text-gray-700">Status</label>
                             <select wire:model="status"
-                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
+                                class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500" disabled>
                                 <option value="Borrowed">Borrowed</option>
                                 <option value="Returned">Returned</option>
                                 <option value="Late">Late</option>
                             </select>
                             @error('status') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
-                        </div>
+                        </div> --}}
 
                     </div>
                 </form>
