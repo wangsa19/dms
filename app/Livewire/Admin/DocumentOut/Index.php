@@ -83,8 +83,8 @@ class Index extends Component
                                     $q->where('department_id', $deptId);
                                 })->get(),
             'employees'    => Employee::with('user')->has('user')
-                                ->when(!$isAdmin && $deptId, function ($q) use ($deptId) {
-                                    $q->where('department_id', $deptId);
+                                ->when(!$isAdmin, function ($q) {
+                                    $q->where('user_id', auth()->id());
                                 })->get(),
         ]);
     }
