@@ -22,14 +22,23 @@ Route::post('/logout', function (Request $request) {
 // Rute rahasia untuk mentrigger command dari luar (karena Render free tier tidak ada cron)
 // Gunakan layanan gratis seperti cron-job.org untuk mengakses URL ini setiap hari
 Route::get('/trigger-cron/{key}', function ($key) {
+    // Saran: ganti 'rahasia123' dengan string yang panjang dan acak di production
     if ($key !== 'rahasia123') {
         abort(403, 'Unauthorized');
     }
 
-    \Illuminate\Support\Facades\Artisan::call('app:send-license-reminder');
-    \Illuminate\Support\Facades\Artisan::call('app:update-expired-licenses');
+    $logOutput = "";
 
-    return "Cron jobs executed successfully!";
+    \Illuminate\Support\Facades\Artisan::call('app:send-license-reminder');
+    $logOutput .= "=== SEND LICENSE REMINDER ===\n";
+    $logOutput .= \Illuminate\Support\Facades\Artisan::output() . "\n\n";
+
+    \Illuminate\Support\Facades\Artisan::call('app:update-expired-licenses');
+    $logOutput .= "=== UPDATE EXPIRED LICENSES ===\n";
+    $logOutput .= \Illuminate\Support\Facades\Artisan::output() . "\n";
+
+    // Return response sebagai plain text agar rapi saat dibaca di log cron-job.org
+    return response($logOutput)->header('Content-Type', 'text/plain');
 });
 
 // Rute Umum untuk user yang sudah login (Staff, Admin, dll)
