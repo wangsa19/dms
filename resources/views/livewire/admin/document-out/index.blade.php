@@ -171,7 +171,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         {{-- Document --}}
-                        <div class="col-span-2 md:col-span-1">
+                        <div class="col-span-full md:col-span-1">
                             <label class="text-sm font-medium text-gray-700">Document</label>
                             <select wire:model="document_id"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">
@@ -185,7 +185,7 @@
                         </div>
 
                         {{-- Borrower --}}
-                        <div class="col-span-2 md:col-span-1">
+                        <div class="col-span-full md:col-span-1">
                             <label class="text-sm font-medium text-gray-700">Borrower (Employee)</label>
                             <select wire:model="borrower_id"
                                 class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-1 text-sm focus:ring-2 focus:ring-blue-500">

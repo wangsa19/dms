@@ -286,7 +286,7 @@
                         </div>
 
                         {{-- Ownership & Location --}}
-                        <div class="col-span-2 border-t pt-4 mt-2">
+                        <div class="col-span-full border-t pt-4 mt-2">
                             <h4 class="text-sm font-bold text-gray-800 mb-4">Ownership</h4>
                         </div>
 
@@ -346,7 +346,7 @@
 
                         @if(!$licenseId)
                         {{-- File Upload & Versioning --}}
-                        <div class="col-span-2 border-t pt-4 mt-2">
+                        <div class="col-span-full border-t pt-4 mt-2">
                             <h4 class="text-sm font-bold text-gray-800 mb-4">Upload File (First Version)</h4>
                         </div>
 
@@ -372,7 +372,7 @@
                             @error('revision_notes') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         @else
-                        <div class="col-span-2 border-t pt-4 mt-2">
+                        <div class="col-span-full border-t pt-4 mt-2">
                             <p class="text-sm text-gray-500 italic">Untuk mengunggah versi baru dari lisensi ini, silakan buka halaman <span class="font-semibold text-blue-600">View (Detail)</span>.</p>
                         </div>
                         @endif
