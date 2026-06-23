@@ -33,4 +33,4 @@ RUN npm run build
 
 EXPOSE 10000
 
-CMD sh -c "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
+CMD sh -c "php artisan storage:link && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
