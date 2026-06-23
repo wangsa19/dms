@@ -47,15 +47,6 @@ class Index extends Component
 
         // Query data document_outs dengan relasi document dan borrower (employee)
         $documentOuts = DocumentOut::with(['document.documentType', 'document.category', 'borrower'])
-            ->when(!$isAdmin && $deptId, function ($query) use ($deptId) {
-                // Hanya tampilkan pinjaman dokumen yang berasal dari departemen user,
-                // dan dipinjam oleh user dari departemen yang sama
-                $query->whereHas('document', function ($q) use ($deptId) {
-                    $q->where('department_id', $deptId);
-                })->whereHas('borrower', function ($q) use ($deptId) {
-                    $q->where('department_id', $deptId);
-                });
-            })
             ->when($this->search, function ($query) {
                 $query->whereHas('document', function ($q) {
                     $q->where('name_id', 'like', '%' . $this->search . '%')

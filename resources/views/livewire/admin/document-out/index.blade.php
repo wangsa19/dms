@@ -125,19 +125,17 @@
                         </div>
                     </div>
                     
-                    @if(auth()->user()->can('edit document outs') || auth()->user()->can('delete document outs'))
+                    @if((auth()->user()->can('edit document outs') || auth()->user()->can('delete document outs')) && $docOut->created_by === auth()->id())
                     <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50 rounded-b-xl flex gap-3 justify-end items-center">
-                        @if($docOut->created_by === auth()->id())
-                            @can('edit document outs')
-                            <button wire:click="edit({{ $docOut->id }})"
-                                class="text-blue-600 hover:text-blue-800 text-sm font-semibold transition hover:underline">Edit</button>
-                            @endcan
-                            
-                            @can('delete document outs')
-                            <button wire:click="confirmDelete({{ $docOut->id }})"
-                                class="text-red-600 hover:text-red-800 text-sm font-semibold transition hover:underline">Delete</button>
-                            @endcan
-                        @endif
+                        @can('edit document outs')
+                        <button wire:click="edit({{ $docOut->id }})"
+                            class="text-blue-600 hover:text-blue-800 text-sm font-semibold transition hover:underline">Edit</button>
+                        @endcan
+                        
+                        @can('delete document outs')
+                        <button wire:click="confirmDelete({{ $docOut->id }})"
+                            class="text-red-600 hover:text-red-800 text-sm font-semibold transition hover:underline">Delete</button>
+                        @endcan
                     </div>
                     @endif
                 </div>
