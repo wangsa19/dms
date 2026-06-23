@@ -31,6 +31,9 @@ RUN npm install
 RUN chmod +x node_modules/.bin/vite
 RUN npm run build
 
+RUN echo "upload_max_filesize = 50M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 50M" >> /usr/local/etc/php/conf.d/uploads.ini
+
 EXPOSE 10000
 
-CMD sh -c "php artisan storage:link && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
+CMD sh -c "php artisan storage:link; php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
