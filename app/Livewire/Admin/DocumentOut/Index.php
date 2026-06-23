@@ -84,7 +84,7 @@ class Index extends Component
                                 })->get(),
             'employees'    => Employee::with('user')->has('user')
                                 ->when(!$isAdmin, function ($q) {
-                                    $q->where('user_id', auth()->id());
+                                    $q->where('id', auth()->user()->employee_id);
                                 })->get(),
         ]);
     }
