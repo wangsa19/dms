@@ -30,6 +30,7 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN chmod +x node_modules/.bin/vite
 RUN npm run build
+RUN chmod -R 777 storage bootstrap/cache
 
 RUN echo "upload_max_filesize = 50M" > /usr/local/etc/php/conf.d/uploads.ini \
     && echo "post_max_size = 50M" >> /usr/local/etc/php/conf.d/uploads.ini
