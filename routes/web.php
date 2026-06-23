@@ -19,6 +19,19 @@ Route::post('/logout', function (Request $request) {
     return redirect('/');
 })->name('logout');
 
+// Rute rahasia untuk mentrigger command dari luar (karena Render free tier tidak ada cron)
+// Gunakan layanan gratis seperti cron-job.org untuk mengakses URL ini setiap hari
+Route::get('/trigger-cron/{key}', function ($key) {
+    if ($key !== 'rahasia123') {
+        abort(403, 'Unauthorized');
+    }
+
+    \Illuminate\Support\Facades\Artisan::call('app:send-license-reminder');
+    \Illuminate\Support\Facades\Artisan::call('app:update-expired-licenses');
+
+    return "Cron jobs executed successfully!";
+});
+
 // Rute Umum untuk user yang sudah login (Staff, Admin, dll)
 Route::middleware('is.login')->group(function () {
     // Dashboard dan halaman umum tanpa prefix admin
