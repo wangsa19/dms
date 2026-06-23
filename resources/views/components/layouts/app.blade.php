@@ -86,7 +86,7 @@
                         <line x1="3" y1="18" x2="21" y2="18" />
                     </svg>
                 </div>
-                {{-- Search Bar --}}
+                <!-- {{-- Search Bar --}}
                 <div class="search-bar relative max-md:hidden">
                     <svg class="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
                         xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -97,6 +97,7 @@
                     <input type="text" placeholder="Search..." class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md py-1.5 pl-8 pr-4 w-64 
                         focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
+                 -->
             </div>
 
             <div class="flex items-center gap-5">
