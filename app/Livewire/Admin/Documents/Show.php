@@ -49,8 +49,8 @@ class Show extends Component
     {
         $version = DocumentVersion::where('document_id', $this->document->id)->findOrFail($versionId);
 
-        if (Storage::disk('public')->exists($version->file_path)) {
-            return Storage::disk('public')->download($version->file_path, $version->file_name);
+        if (Storage::disk('supabase')->exists($version->file_path)) {
+            return Storage::disk('supabase')->download($version->file_path, $version->file_name);
         }
 
         $this->dispatch('show-toast', message: 'File fisik tidak ditemukan di server.', type: 'error');
@@ -66,7 +66,7 @@ class Show extends Component
             $latestVersion = DocumentVersion::where('document_id', $this->document->id)->max('version_number');
             $versionNumber = $latestVersion ? ($latestVersion + 1) : 1;
 
-            $filePath = $this->newFile->store('documents', 'public');
+            $filePath = $this->newFile->store('documents', 'supabase');
 
             DocumentVersion::create([
                 'document_id'    => $this->document->id,

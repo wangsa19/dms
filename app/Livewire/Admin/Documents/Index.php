@@ -216,7 +216,7 @@ class Index extends Component
                 $latestVersion = DocumentVersion::where('document_id', $document->id)->max('version_number');
                 $versionNumber = $latestVersion ? ($latestVersion + 1) : 1;
 
-                $filePath = $fileData->store('documents', 'public');
+                $filePath = $fileData->store('documents', 'supabase');
 
                 DocumentVersion::create([
                     'document_id'    => $document->id,
@@ -258,8 +258,8 @@ class Index extends Component
                     
                     // 1. Hapus file fisiknya dari folder storage (biar storage nggak penuh)
                     foreach ($document->versions as $version) {
-                        if ($version->file_path && Storage::disk('public')->exists($version->file_path)) {
-                            Storage::disk('public')->delete($version->file_path);
+                        if ($version->file_path && Storage::disk('supabase')->exists($version->file_path)) {
+                            Storage::disk('supabase')->delete($version->file_path);
                         }
                     }
 

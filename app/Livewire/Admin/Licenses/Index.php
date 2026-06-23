@@ -267,7 +267,7 @@ class Index extends Component
                 $latestVersion = LicenseVersion::where('license_id', $license->id)->max('version_number');
                 $versionNumber = $latestVersion ? ($latestVersion + 1) : 1;
 
-                $filePath = $fileData->store('licenses', 'public');
+                $filePath = $fileData->store('licenses', 'supabase');
 
                 LicenseVersion::create([
                     'license_id'     => $license->id,
@@ -310,8 +310,8 @@ class Index extends Component
                     Gate::authorize('delete', $license);
                     
                     foreach ($license->versions as $version) {
-                        if ($version->file_path && Storage::disk('public')->exists($version->file_path)) {
-                            Storage::disk('public')->delete($version->file_path);
+                        if ($version->file_path && Storage::disk('supabase')->exists($version->file_path)) {
+                            Storage::disk('supabase')->delete($version->file_path);
                         }
                     }
 
