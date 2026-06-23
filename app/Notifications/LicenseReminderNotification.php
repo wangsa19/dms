@@ -41,7 +41,7 @@ class LicenseReminderNotification extends Notification implements ShouldQueue
                     ->subject('License Reminder: ' . $this->license->name_id)
                     ->greeting('Hello ' . ($notifiable->employee->name ?? 'User') . ',')
                     ->line('This is a reminder that the license "' . $this->license->name_id . '" is set to expire on ' . $this->license->end_date . '.')
-                    ->action('View License', url('/admin/licenses/' . $this->license->id))
+                    ->action('View License', url('/licenses/' . $this->license->id))
                     ->line('Please take the necessary actions to renew or manage this license before it expires.');
     }
 
