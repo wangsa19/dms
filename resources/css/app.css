@@ -15,7 +15,7 @@
     --yazaki-red: #d90000;
 }
 
-@base {
+@layer base {
     @keyframes blob {
         0%,
         100% {

@@ -115,7 +115,7 @@
                 Manajemen Dokumen
             </span>
             <span class="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-600 to-red-700 dark:from-red-400 dark:via-red-500 dark:to-red-600 drop-shadow-[0_0_30px_rgba(239,68,68,0.2)]">
-                Lebih Cerdas.
+                Lebih Cepat.
             </span>
         </h1>
 
