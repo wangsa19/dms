@@ -23,25 +23,85 @@
         {{-- Card Body --}}
         <div class="p-5">
             {{-- Table Controls (Show & Search) --}}
-            <div class="flex justify-between items-center mb-4 flex-wrap gap-y-4">
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+
+                <!-- Status Filter -->
+                <div class="w-full md:w-48">
+                    <select wire:model.live="filterStatus" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-500">
+                        <option value="">All Status</option>
+                        <option value="Borrowed">Borrowed</option>
+                        <option value="Returned">Returned</option>
+                        <option value="Late">Late</option>
+                    </select>
+                </div>
+
+                <!-- Department Filter -->
+                <div class="w-full md:w-48">
+                    <select wire:model.live="filterDepartmentId" class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-500">
+                        <option value="">All Departments</option>
+                        @foreach($departments as $dept)
+                            <option value="{{ $dept->id }}">{{ $dept->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Reset Button -->
+                <div>
+                    <button wire:click="resetFilters" class="w-full md:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-lg transition whitespace-nowrap">Reset Filter</button>
+                </div>
             </div>
 
             {{-- Admin Table View --}}
             @if(auth()->user()->hasRole('Admin'))
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
-                    <thead class="bg-gray-50 text-gray-600">
+                    <thead class="bg-gray-50 text-gray-600 select-none">
                         <tr>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">No.</th>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">Document Name</th>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">Borrowed By</th>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">Checkout Time</th>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">Return Time</th>
-                            <th class="p-3 text-left font-semibold whitespace-nowrap">Status</th>
+                            <th class="p-3 text-left font-semibold whitespace-nowrap cursor-pointer hover:bg-gray-200 transition" wire:click="sortBy('document_outs.created_at')">
+                                No.
+                                @if($sortField === 'document_outs.created_at')
+                                    <span>{!! $sortDirection === 'asc' ? '&#8593;' : '&#8595;' !!}</span>
+                                @endif
+                            </th>
+                            <th class="p-3 text-left font-semibold whitespace-nowrap cursor-pointer hover:bg-gray-200 transition" wire:click="sortBy('documents.name_id')">
+                                Document Name
+                                @if($sortField === 'documents.name_id')
+                                    <span>{!! $sortDirection === 'asc' ? '&#8593;' : '&#8595;' !!}</span>
+                                @endif
+                            </th>
+                            <th class="p-3 text-left font-semibold whitespace-nowrap cursor-pointer hover:bg-gray-200 transition" wire:click="sortBy('borrowers.name')">
+                                Borrowed By
+                                @if($sortField === 'borrowers.name')
+                                    <span>{!! $sortDirection === 'asc' ? '&#8593;' : '&#8595;' !!}</span>
+                                @endif
+                            </th>
+                            <th class="p-3 text-left font-semibold whitespace-nowrap cursor-pointer hover:bg-gray-200 transition" wire:click="sortBy('departments.name')">
+                                Department
+                                @if($sortField === 'departments.name')
+                                    <span>{!! $sortDirection === 'asc' ? '&#8593;' : '&#8595;' !!}</span>
+                                @endif
+                            </th>
+                            <th class="p-3 text-left font-semibold whitespace-nowrap cursor-pointer hover:bg-gray-200 transition" wire:click="sortBy('document_outs.checkout_time')">
+                                Checkout Time
+                                @if($sortField === 'document_outs.checkout_time')
+                                    <span>{!! $sortDirection === 'asc' ? '&#8593;' : '&#8595;' !!}</span>
+                                @endif
+                            </th>
+                            <th class="p-3 text-left font-semibold whitespace-nowrap cursor-pointer hover:bg-gray-200 transition" wire:click="sortBy('document_outs.return_time')">
+                                Return Time
+                                @if($sortField === 'document_outs.return_time')
+                                    <span>{!! $sortDirection === 'asc' ? '&#8593;' : '&#8595;' !!}</span>
+                                @endif
+                            </th>
+                            <th class="p-3 text-left font-semibold whitespace-nowrap cursor-pointer hover:bg-gray-200 transition" wire:click="sortBy('document_outs.status')">
+                                Status
+                                @if($sortField === 'document_outs.status')
+                                    <span>{!! $sortDirection === 'asc' ? '&#8593;' : '&#8595;' !!}</span>
+                                @endif
+                            </th>
 
                             {{-- Sembunyikan header Action jika tidak punya akses edit ATAU delete --}}
-                            @if(auth()->user()->can('edit document outs') || auth()->user()->can('delete document
-                            outs'))
+                            @if(auth()->user()->can('edit document outs') || auth()->user()->can('delete document outs'))
                             <th class="p-3 text-left font-semibold whitespace-nowrap">Action</th>
                             @endif
                         </tr>
@@ -53,6 +113,7 @@
                             </td>
                             <td class="p-3 align-middle font-medium">{{ $docOut->document->name_id ?? '-' }}</td>
                             <td class="p-3 align-middle font-medium">{{ $docOut->borrower->name ?? '-' }}</td>
+                            <td class="p-3 align-middle text-sm">{{ $docOut->borrower->department->name ?? 'No Dept' }}</td>
                             <td class="p-3 align-middle whitespace-nowrap">{{
                                 \Carbon\Carbon::parse($docOut->checkout_time)->format('Y-m-d H:i') }}</td>
                             <td class="p-3 align-middle whitespace-nowrap">
@@ -88,7 +149,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center p-4 text-gray-500">No documents out found.</td>
+                            <td colspan="8" class="text-center p-4 text-gray-500">No documents out found.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -108,9 +169,13 @@
                         </div>
 
                         <div class="space-y-2 mt-4">
-                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                                <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                <span class="font-medium text-gray-800 dark:text-gray-200 mr-1">Borrower:</span> {{ $docOut->borrower->name ?? '-' }}
+                            <div class="flex items-start text-sm text-gray-600 dark:text-gray-400">
+                                <svg class="w-4 h-4 mr-2 mt-0.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                <div>
+                                    <span class="font-medium text-gray-800 dark:text-gray-200 mr-1">Borrower:</span> 
+                                    {{ $docOut->borrower->name ?? '-' }}
+                                    <div class="text-xs mt-0.5">{{ $docOut->borrower->department->name ?? 'No Dept' }}</div>
+                                </div>
                             </div>
                             <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
                                 <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>

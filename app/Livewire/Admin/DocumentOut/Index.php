@@ -20,13 +20,20 @@ class Index extends Component
     public $return_time;
     public $status = 'Borrowed';
 
+    // Filters
+    public $filterStatus = '';
+    public $filterDepartmentId = '';
+
+    // Sorting
+    public $sortField = 'document_outs.created_at';
+    public $sortDirection = 'desc';
+
     // Modal state
     public $isOpen = false;
     public $showDeleteModal = false;
     public $documentOutIdToDelete = null;
 
     // Table properties
-    public $search = '';
     public $perPage = 10;
 
     protected function rules()
@@ -39,6 +46,16 @@ class Index extends Component
         ];
     }
 
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
+
     public function render()
     {
         $user = auth()->user();
@@ -46,17 +63,18 @@ class Index extends Component
         $deptId = $user->employee->department_id ?? null;
 
         // Query data document_outs dengan relasi document dan borrower (employee)
-        $documentOuts = DocumentOut::with(['document.documentType', 'document.category', 'borrower'])
-            ->when($this->search, function ($query) {
-                $query->whereHas('document', function ($q) {
-                    $q->where('name_id', 'like', '%' . $this->search . '%')
-                        ->orWhere('name_jp', 'like', '%' . $this->search . '%');
-                })->orWhereHas('borrower', function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%')
-                        ->orWhere('nik', 'like', '%' . $this->search . '%'); // Asumsi Employee punya kolom 'nik'
-                });
+        $documentOuts = DocumentOut::select('document_outs.*')
+            ->leftJoin('documents', 'document_outs.document_id', '=', 'documents.id')
+            ->leftJoin('employees as borrowers', 'document_outs.borrower_id', '=', 'borrowers.id')
+            ->leftJoin('departments', 'borrowers.department_id', '=', 'departments.id')
+            ->with(['document.documentType', 'document.category', 'borrower.department'])
+            ->when($this->filterStatus, function ($query) {
+                $query->where('document_outs.status', $this->filterStatus);
             })
-            ->latest()
+            ->when($this->filterDepartmentId, function ($query) {
+                $query->where('documents.department_id', $this->filterDepartmentId);
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
         // Ambil ID dokumen yang sedang dipinjam (kecuali dokumen yang sedang diedit saat ini)
@@ -68,6 +86,7 @@ class Index extends Component
 
         return view('livewire.admin.document-out.index', [
             'documentOuts' => $documentOuts,
+            'departments'  => \App\Models\Department::all(),
             'documents'    => Document::where('status', 'Active')
                                 ->whereNotIn('id', $currentlyBorrowedDocumentIds)
                                 ->when(!$isAdmin && $deptId, function ($q) use ($deptId) {
@@ -201,7 +220,18 @@ class Index extends Component
         $this->documentOutIdToDelete = null;
     }
 
-    public function updatedSearch()
+    public function resetFilters()
+    {
+        $this->reset(['filterStatus', 'filterDepartmentId']);
+        $this->resetPage();
+    }
+
+    public function updatedFilterStatus()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterDepartmentId()
     {
         $this->resetPage();
     }
