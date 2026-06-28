@@ -29,13 +29,19 @@ Route::get('/trigger-cron/{key}', function ($key) {
 
     $logOutput = "";
 
-    \Illuminate\Support\Facades\Artisan::call('app:send-license-reminder');
-    $logOutput .= "=== SEND LICENSE REMINDER ===\n";
-    $logOutput .= \Illuminate\Support\Facades\Artisan::output() . "\n\n";
+    try {
+        \Illuminate\Support\Facades\Artisan::call('app:send-license-reminder');
+        $logOutput .= "=== SEND LICENSE REMINDER ===\n";
+        $logOutput .= \Illuminate\Support\Facades\Artisan::output() . "\n\n";
 
-    \Illuminate\Support\Facades\Artisan::call('app:update-expired-licenses');
-    $logOutput .= "=== UPDATE EXPIRED LICENSES ===\n";
-    $logOutput .= \Illuminate\Support\Facades\Artisan::output() . "\n";
+        \Illuminate\Support\Facades\Artisan::call('app:update-expired-licenses');
+        $logOutput .= "=== UPDATE EXPIRED LICENSES ===\n";
+        $logOutput .= \Illuminate\Support\Facades\Artisan::output() . "\n";
+    } catch (\Throwable $e) {
+        $logOutput .= "\n=== ERROR OCCURRED ===\n";
+        $logOutput .= "Message: " . $e->getMessage() . "\n";
+        $logOutput .= "File: " . $e->getFile() . " (Line: " . $e->getLine() . ")\n";
+    }
 
     // Return response sebagai plain text agar rapi saat dibaca di log cron-job.org
     return response($logOutput)->header('Content-Type', 'text/plain');
