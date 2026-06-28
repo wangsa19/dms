@@ -46,6 +46,10 @@ class Index extends Component
     // Properti tabel
     public $search = '';
     public $perPage = 10;
+    public $filter_department = '';
+    public $filter_document_type = '';
+    public $filter_category = '';
+    public $filter_field = '';
 
     // Modal delete
     public $showDeleteModal = false;
@@ -94,6 +98,18 @@ class Index extends Component
             ->where(function ($query) {
                 $query->where('name_id', 'like', '%' . $this->search . '%')
                     ->orWhere('name_jp', 'like', '%' . $this->search . '%');
+            })
+            ->when($this->filter_department, function ($query) {
+                $query->where('department_id', $this->filter_department);
+            })
+            ->when($this->filter_document_type, function ($query) {
+                $query->where('document_type_id', $this->filter_document_type);
+            })
+            ->when($this->filter_category, function ($query) {
+                $query->where('category_id', $this->filter_category);
+            })
+            ->when($this->filter_field, function ($query) {
+                $query->where('field_id', $this->filter_field);
             })
             ->latest()
             ->paginate($this->perPage);
@@ -287,6 +303,36 @@ class Index extends Component
 
     public function updatedPerPage()
     {
+        $this->resetPage();
+    }
+
+    public function updatedFilterDepartment()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterDocumentType()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterCategory()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterField()
+    {
+        $this->resetPage();
+    }
+
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->filter_department = '';
+        $this->filter_document_type = '';
+        $this->filter_category = '';
+        $this->filter_field = '';
         $this->resetPage();
     }
 

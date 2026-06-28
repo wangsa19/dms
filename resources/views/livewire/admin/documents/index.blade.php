@@ -20,25 +20,65 @@
 
         <div class="p-5">
             {{-- Table Controls --}}
-            <div class="flex justify-between items-center mb-4 flex-wrap gap-y-4">
-                <div>
-                    <label class="text-sm text-gray-700">Show
-                        <select wire:model.live="perPage"
-                            class="border border-gray-300 rounded-md text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
-                            <option>10</option>
-                            <option>25</option>
-                            <option>50</option>
-                        </select>
-                        entries
-                    </label>
+            <div class="flex flex-col gap-4 mb-4">
+                {{-- Top row: Show & Search --}}
+                <div class="flex justify-between items-center flex-wrap gap-y-4">
+                    <div>
+                        <label class="text-sm text-gray-700">Show
+                            <select wire:model.live="perPage"
+                                class="border border-gray-300 rounded-md text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
+                                <option>10</option>
+                                <option>25</option>
+                                <option>50</option>
+                            </select>
+                            entries
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="text-sm text-gray-700">Search:
+                            <input wire:model.live.debounce.300ms="search" type="search"
+                                placeholder="Search document name..."
+                                class="border border-gray-300 rounded-md text-sm p-1.5 ml-2 focus:border-blue-500 focus:ring-blue-500">
+                        </label>
+                    </div>
                 </div>
 
-                <div>
-                    <label class="text-sm text-gray-700">Search:
-                        <input wire:model.live.debounce.300ms="search" type="search"
-                            placeholder="Search document name..."
-                            class="border border-gray-300 rounded-md text-sm p-1.5 ml-2 focus:border-blue-500 focus:ring-blue-500">
-                    </label>
+                {{-- Bottom row: Filters & Reset --}}
+                <div class="flex gap-4 items-center flex-wrap">
+                    <select wire:model.live="filter_department"
+                        class="border border-gray-300 rounded-md text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
+                        <option value="">All Departments</option>
+                        @foreach($departments as $dept)
+                        <option value="{{ $dept->id }}">{{ $dept->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <select wire:model.live="filter_document_type"
+                        class="border border-gray-300 rounded-md text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
+                        <option value="">All Types</option>
+                        @foreach($documentTypes as $type)
+                        <option value="{{ $type->id }}">{{ $type->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <select wire:model.live="filter_category"
+                        class="border border-gray-300 rounded-md text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <select wire:model.live="filter_field"
+                        class="border border-gray-300 rounded-md text-sm py-1.5 pl-2 pr-8 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600 dark:focus:ring-blue-400">
+                        <option value="">All Fields</option>
+                        @foreach($fields as $field)
+                        <option value="{{ $field->id }}">{{ $field->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <button wire:click="resetFilters" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-lg transition whitespace-nowrap">Reset Filter</button>
                 </div>
             </div>
 
