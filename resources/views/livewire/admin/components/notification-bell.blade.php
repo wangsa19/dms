@@ -27,7 +27,7 @@
         <div class="max-h-80 overflow-y-auto">
             @forelse($notifications as $notif)
             <div class="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b flex items-start gap-3 transition-colors"
-                wire:click="markAsRead({{ $notif->id }})">
+                wire:click="markAsReadAndRedirect({{ $notif->id }})">
                 <div class="mt-1 bg-red-100 text-red-600 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -38,7 +38,7 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-xs font-semibold text-gray-800">License Expiring!</p>
+                    <p class="text-xs font-semibold text-gray-800">{{ $notif->document_id ? 'Document Return Due' : ($notif->license_id ? 'License Expiring!' : 'Notification') }}</p>
                     <p class="text-[11px] text-gray-500 leading-tight mt-0.5">{{ $notif->message }}</p>
                 </div>
             </div>
