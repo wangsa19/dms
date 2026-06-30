@@ -36,6 +36,10 @@ Route::get('/trigger-cron/{key}', function ($key) {
 
         \Illuminate\Support\Facades\Artisan::call('app:update-expired-licenses');
         $logOutput .= "=== UPDATE EXPIRED LICENSES ===\n";
+        $logOutput .= \Illuminate\Support\Facades\Artisan::output() . "\n\n";
+
+        \Illuminate\Support\Facades\Artisan::call('app:send-document-return-reminder');
+        $logOutput .= "=== SEND DOCUMENT RETURN REMINDER ===\n";
         $logOutput .= \Illuminate\Support\Facades\Artisan::output() . "\n";
     } catch (\Throwable $e) {
         $logOutput .= "\n=== ERROR OCCURRED ===\n";
