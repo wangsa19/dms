@@ -72,7 +72,7 @@ class Index extends Component
                 $query->where('document_outs.status', $this->filterStatus);
             })
             ->when($this->filterDepartmentId, function ($query) {
-                $query->where('documents.department_id', $this->filterDepartmentId);
+                $query->where('borrowers.department_id', $this->filterDepartmentId);
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
@@ -112,6 +112,7 @@ class Index extends Component
         abort_if(!auth()->user()->can('create document outs'), 403, 'Anda tidak memiliki akses untuk membuat data peminjaman.');
 
         $this->openModal();
+        $this->checkout_time = now()->format('Y-m-d\TH:i');
     }
 
     public function closeModal()
