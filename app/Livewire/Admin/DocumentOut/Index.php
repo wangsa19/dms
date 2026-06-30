@@ -43,6 +43,7 @@ class Index extends Component
             'borrower_id'   => 'required|exists:employees,id',
             'checkout_time' => 'required|date',
             'return_time'   => 'nullable|date|after_or_equal:checkout_time',
+            'status'        => 'required|in:Borrowed,Returned,Late',
         ];
     }
 
@@ -169,8 +170,8 @@ class Index extends Component
 
         $data = $this->validate();
 
-        // Auto determine status
-        $data['status'] = !empty($data['return_time']) ? 'Returned' : 'Borrowed';
+        // Status is now handled by the form select component and validated
+        $data['status'] = $this->status;
 
         if (!$this->documentOutId) {
             $data['created_by'] = auth()->id();
