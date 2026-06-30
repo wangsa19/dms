@@ -41,13 +41,14 @@ class DummyDataUserSeeder extends Seeder
             $docType = DocumentType::inRandomOrder()->first() ?? DocumentType::first();
             $category = Category::inRandomOrder()->first() ?? Category::first();
             $field = Field::inRandomOrder()->first() ?? Field::first();
-            $department = Department::inRandomOrder()->first() ?? Department::first();
-            $section = Section::inRandomOrder()->first() ?? Section::first();
-            
             // PIC (Owner) should not be Junior Supervisor (JSPV). Pick only from SSPV or SPV roles
             $employee = Employee::whereHas('user.roles', function($query) {
                 $query->whereIn('name', ['Senior Supervisor', 'Supervisor', 'Admin']);
             })->inRandomOrder()->first() ?? Employee::first();
+
+            // Sync Department and Section with the chosen Employee
+            $department = $employee->department ?? (Department::inRandomOrder()->first() ?? Department::first());
+            $section = $employee->section ?? (Section::inRandomOrder()->first() ?? Section::first());
 
             $user = User::inRandomOrder()->first() ?? User::first();
             $actionUnit = \App\Models\ActionFrequencyUnit::inRandomOrder()->first();
