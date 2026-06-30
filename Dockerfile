@@ -25,7 +25,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --prefer-source
 
 RUN npm install
 RUN chmod +x node_modules/.bin/vite

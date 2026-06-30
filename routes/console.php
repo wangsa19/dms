@@ -11,3 +11,5 @@ Artisan::command('inspire', function () {
 Schedule::command('app:send-license-reminder')->dailyAt('08:00');
 
 Schedule::command('app:update-expired-licenses')->dailyAt('00:01');
+
+Schedule::command('app:send-document-return-reminder')->dailyAt('08:00');
