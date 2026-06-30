@@ -16,14 +16,22 @@
                     <p class="text-xs text-gray-400 mt-1">{{ $notif->created_at->diffForHumans() }}</p>
                 </div>
 
-                @if($notif->status === 'unread')
-                <button wire:click="markAsRead({{ $notif->id }})"
-                    class="text-xs text-blue-600 font-semibold hover:underline cursor-pointer">
-                    Mark as read
-                </button>
-                @else
-                <span class="text-xs text-gray-400 italic">Read</span>
-                @endif
+                <div class="flex items-center gap-3">
+                    @if($notif->document_id)
+                    <a href="{{ route('document-out') }}" class="text-xs text-indigo-600 font-semibold hover:underline">View Document Out</a>
+                    @elseif($notif->license_id)
+                    <a href="{{ route('licenses.show', $notif->license_id) }}" class="text-xs text-indigo-600 font-semibold hover:underline">View License</a>
+                    @endif
+
+                    @if($notif->status === 'unread')
+                    <button wire:click="markAsRead({{ $notif->id }})"
+                        class="text-xs text-blue-600 font-semibold hover:underline cursor-pointer">
+                        Mark as read
+                    </button>
+                    @else
+                    <span class="text-xs text-gray-400 italic">Read</span>
+                    @endif
+                </div>
             </div>
             @empty
             <div class="p-8 text-center text-gray-500">No notifications found.</div>

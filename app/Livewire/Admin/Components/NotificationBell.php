@@ -13,6 +13,20 @@ class NotificationBell extends Component
         \App\Models\Notification::find($id)->update(['status' => 'read']);
     }
 
+    public function markAsReadAndRedirect($id)
+    {
+        $notification = \App\Models\Notification::find($id);
+        if ($notification) {
+            $notification->update(['status' => 'read']);
+            
+            if ($notification->document_id) {
+                return redirect()->route('document-out');
+            } elseif ($notification->license_id) {
+                return redirect()->route('licenses.show', $notification->license_id);
+            }
+        }
+    }
+
     public function render()
     {
         $notifications = Notification::where('user_id', Auth::id())
